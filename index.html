@@ -1,0 +1,2202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow Traders Collective</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-deep: #EDE9E3;
+  --bg-primary: #F7F4EF;
+  --bg-card: rgba(255,255,255,0.85);
+  --bg-card-hover: rgba(255,255,255,0.99);
+  --accent-green: #00DC82;
+  --accent-blue: #3B82F6;
+  --accent-cyan: #22D3EE;
+  --accent-gold: #F5B732;
+  --text-primary: #1C1917;
+  --text-secondary: #78716C;
+  --text-muted: #A8A29E;
+  --gradient-main: linear-gradient(135deg, #059669 0%, #2563EB 55%, #0891B2 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(5,150,105,0.07), rgba(37,99,235,0.07));
+  --border: rgba(0,0,0,0.09);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --font-display: 'Inter', sans-serif;
+  --font-heading: 'DM Serif Display', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+/* Extra bottom padding on mobile so content doesn't hide behind fixed nav pill */
+@media (max-width: 767px) {
+  body { padding-bottom: 80px; }
+}
+
+body {
+  font-family: var(--font-display);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dot grid overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* ─── Utility ─── */
+.container { max-width: 480px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+@media (min-width: 768px)  { .container { max-width: 720px;  padding: 0 32px; } }
+@media (min-width: 1024px) { .container { max-width: 960px;  } }
+@media (min-width: 1280px) { .container { max-width: 1160px; padding: 0 40px; } }
+
+.gradient-text {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Buttons ─── */
+/* btn-dark = filled flow-btn variant (dark bg, white blob) */
+.btn-dark { font-size: 15px; padding: 15px 34px; }
+.btn-dark .flow-arr-l { left: -25%; width: 16px; height: 16px; stroke-width: 2; }
+.btn-dark:hover .flow-arr-l { left: 16px; }
+.btn-dark .flow-arr-r { right: 16px; width: 16px; height: 16px; stroke-width: 2; }
+.btn-dark:hover .flow-arr-r { right: -25%; }
+
+/* btn-primary = flow-btn sizing */
+.btn-primary { font-size: 15px; padding: 14px 36px; }
+.btn-primary .flow-arr-l { left: -25%; width: 16px; height: 16px; stroke-width: 2; }
+.btn-primary:hover .flow-arr-l { left: 16px; }
+.btn-primary .flow-arr-r { right: 16px; width: 16px; height: 16px; stroke-width: 2; }
+.btn-primary:hover .flow-arr-r { right: -25%; }
+
+/* btn-secondary = ghost flow-btn sizing */
+.btn-secondary { font-size: 15px; padding: 15px 34px; }
+.btn-secondary .flow-arr-l { left: -25%; width: 16px; height: 16px; stroke-width: 2; }
+.btn-secondary:hover .flow-arr-l { left: 16px; }
+.btn-secondary .flow-arr-r { right: 16px; width: 16px; height: 16px; stroke-width: 2; }
+.btn-secondary:hover .flow-arr-r { right: -25%; }
+
+
+/* ─── Background FX ─── */
+.bg-glow {
+  position: fixed;
+  top: -250px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(5,150,105,0.06) 0%, rgba(37,99,235,0.03) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+#particles-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.6s ease;
+}
+body.dark #particles-canvas {
+  opacity: 0;
+}
+.mouse-glow {
+  position: fixed;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(5,150,105,0.05) 0%, rgba(37,99,235,0.025) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.4s ease, top 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+}
+.mouse-glow.active { opacity: 1; }
+
+/* ─── Navigation ─── */
+
+/* Logo + toggle — fixed top-left */
+.site-top-left {
+  position: fixed;
+  top: 14px; left: 24px;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.site-logo { display: flex; align-items: center; text-decoration: none; }
+.site-logo img { height: 34px; width: auto; }
+
+/* ─── Theme toggle — pill slider ─── */
+.theme-toggle {
+  width: 64px; height: 32px;
+  border-radius: 100px;
+  position: relative;
+  cursor: pointer;
+  background: #09090B;
+  border: 1.5px solid #27272A;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 0;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #27272A;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease;
+}
+.toggle-idle {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+/* Dark = default pill state */
+.tog-moon      { display: flex; color: #fff; }
+.tog-sun       { display: none; color: #374151; }
+.tog-sun-idle  { display: flex; color: #6B7280; }
+.tog-moon-idle { display: none; color: #000; }
+/* Light mode pill state */
+body:not(.dark) .theme-toggle        { background: #fff; border-color: #E4E4E7; }
+body:not(.dark) .toggle-thumb        { transform: translateX(32px); background: #E5E7EB; }
+body:not(.dark) .toggle-idle         { transform: translateX(-32px); }
+body:not(.dark) .tog-moon            { display: none; }
+body:not(.dark) .tog-sun             { display: flex; }
+body:not(.dark) .tog-sun-idle        { display: none; }
+body:not(.dark) .tog-moon-idle       { display: flex; }
+
+/* ─── Flow Button ─── */
+.flow-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  border-radius: 100px;
+  border: 1.5px solid rgba(51,51,51,0.4);
+  background: transparent;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: #111111;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 600ms cubic-bezier(0.23,1,0.32,1),
+              color 600ms cubic-bezier(0.23,1,0.32,1),
+              border-radius 600ms cubic-bezier(0.23,1,0.32,1);
+  letter-spacing: 0.01em;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+.flow-btn:hover { border-color: transparent; color: #fff; border-radius: 12px; }
+.flow-btn:active { transform: scale(0.95); }
+.flow-btn-text {
+  position: relative; z-index: 1;
+  transform: translateX(-12px);
+  transition: transform 800ms ease-out;
+}
+.flow-btn:hover .flow-btn-text { transform: translateX(12px); }
+.flow-btn-blob {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 16px; height: 16px;
+  background: #111111; border-radius: 50%; opacity: 0;
+  transition: width 800ms cubic-bezier(0.19,1,0.22,1),
+              height 800ms cubic-bezier(0.19,1,0.22,1),
+              opacity 600ms;
+  z-index: 0;
+  pointer-events: none;
+}
+.flow-btn:hover .flow-btn-blob { width: 220px; height: 220px; opacity: 1; }
+.flow-arr {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.flow-arr-l { stroke: #111; transition: left 800ms cubic-bezier(0.34,1.56,0.64,1), stroke 500ms; }
+.flow-arr-r { stroke: #111; transition: right 800ms cubic-bezier(0.34,1.56,0.64,1), stroke 500ms; }
+.flow-btn:hover .flow-arr-l { stroke: #fff; }
+.flow-btn:hover .flow-arr-r { stroke: #fff; }
+/* Dark mode flow button */
+body.dark .flow-btn         { color: #F8FAFC; border-color: rgba(248,250,252,0.28); }
+body.dark .flow-btn:hover   { color: #111; }
+body.dark .flow-btn-blob    { background: #F8FAFC; }
+body.dark .flow-arr-l       { stroke: #F8FAFC; }
+body.dark .flow-arr-r       { stroke: #F8FAFC; }
+body.dark .flow-btn:hover .flow-arr-l { stroke: #111; }
+body.dark .flow-btn:hover .flow-arr-r { stroke: #111; }
+
+/* ── Filled variant — must come AFTER .flow-btn to win the cascade ── */
+.flow-btn.flow-btn-filled {
+  background: #1C1917;
+  border-color: transparent;
+  color: #F7F4EF;
+}
+.flow-btn.flow-btn-filled .flow-arr-l,
+.flow-btn.flow-btn-filled .flow-arr-r  { stroke: #F7F4EF; }
+.flow-btn.flow-btn-filled .flow-btn-blob { background: #F7F4EF; }
+.flow-btn.flow-btn-filled:hover { color: #1C1917; border-color: transparent; border-radius: 12px; }
+.flow-btn.flow-btn-filled:hover .flow-arr-l,
+.flow-btn.flow-btn-filled:hover .flow-arr-r { stroke: #1C1917; }
+/* Dark mode filled: start light, dark blob on hover */
+body.dark .flow-btn.flow-btn-filled                 { background: #F8FAFC; color: #111; border-color: transparent; }
+body.dark .flow-btn.flow-btn-filled .flow-arr-l,
+body.dark .flow-btn.flow-btn-filled .flow-arr-r     { stroke: #111; }
+body.dark .flow-btn.flow-btn-filled .flow-btn-blob  { background: #111; }
+body.dark .flow-btn.flow-btn-filled:hover           { color: #F8FAFC; }
+body.dark .flow-btn.flow-btn-filled:hover .flow-arr-l,
+body.dark .flow-btn.flow-btn-filled:hover .flow-arr-r { stroke: #F8FAFC; }
+
+/* "Join community" hero button — stays black, only arrows animate */
+.btn-dark.flow-btn.flow-btn-filled .flow-btn-blob              { background: #1C1917; }
+.btn-dark.flow-btn.flow-btn-filled:hover                       { color: #F7F4EF; }
+.btn-dark.flow-btn.flow-btn-filled:hover .flow-arr-l,
+.btn-dark.flow-btn.flow-btn-filled:hover .flow-arr-r           { stroke: #F7F4EF; }
+body.dark .btn-dark.flow-btn.flow-btn-filled .flow-btn-blob    { background: #F8FAFC; }
+body.dark .btn-dark.flow-btn.flow-btn-filled:hover             { color: #111; }
+body.dark .btn-dark.flow-btn.flow-btn-filled:hover .flow-arr-l,
+body.dark .btn-dark.flow-btn.flow-btn-filled:hover .flow-arr-r { stroke: #111; }
+
+/* CTA — fixed top-right */
+.site-nav-cta {
+  position: fixed;
+  top: 14px; right: 24px;
+  z-index: 101;
+  display: none;
+  font-size: 13px;
+  padding: 9px 24px;
+}
+.site-nav-cta .flow-arr-l { left: -25%; width: 14px; height: 14px; stroke-width: 2; }
+.site-nav-cta:hover .flow-arr-l { left: 14px; }
+.site-nav-cta .flow-arr-r { right: 14px; width: 14px; height: 14px; stroke-width: 2; }
+.site-nav-cta:hover .flow-arr-r { right: -25%; }
+@media (min-width: 768px) { .site-nav-cta { display: inline-flex; align-items: center; } }
+
+/* Tubelight pill — centered, bottom on mobile / top on desktop */
+nav {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+@media (min-width: 768px) { nav { bottom: auto; top: 16px; } }
+
+.tubelight-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.09);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 4px;
+  border-radius: 100px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05);
+  overflow: visible;
+}
+
+/* Sliding highlight */
+.tubelight-bg {
+  position: absolute;
+  top: 4px;
+  height: calc(100% - 8px);
+  background: rgba(255,255,255,0.95);
+  border-radius: 100px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.09);
+  transition: left 0.38s cubic-bezier(0.34,1.56,0.64,1), width 0.38s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Tube-light bar — above pill on desktop, below on mobile */
+.tubelight-bg::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: -7px;
+  transform: translateX(-50%);
+  width: 28px; height: 3px;
+  background: #1C1917;
+  border-radius: 0 0 4px 4px;
+}
+.tubelight-bg::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: -20px;
+  transform: translateX(-50%);
+  width: 56px; height: 18px;
+  background: rgba(28,25,23,0.13);
+  border-radius: 50%;
+  filter: blur(10px);
+}
+@media (max-width: 767px) {
+  .tubelight-bg::before { top: auto; bottom: -7px; border-radius: 4px 4px 0 0; }
+  .tubelight-bg::after  { top: auto; bottom: -20px; }
+}
+
+/* Nav items */
+.nav-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 100px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(28,25,23,0.55);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.nav-item:hover  { color: #1C1917; }
+.nav-item.active { color: #1C1917; }
+.nav-icon { display: flex; align-items: center; }
+@media (min-width: 768px) { .nav-icon { display: none; } }
+.nav-label { display: none; }
+@media (min-width: 768px) { .nav-label { display: inline; } }
+
+/* ─── Dark Mode ─── */
+body.dark {
+  --bg-deep: #04070D;
+  --bg-primary: #06090F;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.07);
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --gradient-main: linear-gradient(135deg, #00DC82 0%, #3B82F6 55%, #22D3EE 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(0,220,130,0.08), rgba(59,130,246,0.08));
+  --border: rgba(255,255,255,0.07);
+}
+body.dark::before {
+  background-image: radial-gradient(rgba(148,163,184,0.04) 1px, transparent 1px);
+}
+/* Dark mode pill toggle */
+body.dark .theme-toggle   { background: #09090B; border-color: #27272A; }
+body.dark .toggle-thumb   { transform: translateX(0); background: #27272A; }
+body.dark .toggle-idle    { transform: translateX(0); }
+body.dark .tog-moon       { display: flex; }
+body.dark .tog-sun        { display: none; }
+body.dark .tog-sun-idle   { display: flex; }
+body.dark .tog-moon-idle  { display: none; }
+/* Logo swap for dark mode */
+body.dark .site-logo img { content: url('logo-blue.jpg'); filter: none; clip-path: inset(10px); }
+/* Nav pill */
+body.dark .tubelight-pill { background: rgba(6,9,15,0.65); border-color: rgba(255,255,255,0.09); }
+body.dark .tubelight-bg   { background: rgba(255,255,255,0.09); box-shadow: 0 1px 6px rgba(0,0,0,0.5); }
+body.dark .tubelight-bg::before { background: #F8FAFC; }
+body.dark .tubelight-bg::after  { background: rgba(248,250,252,0.15); }
+body.dark .nav-item             { color: rgba(248,250,252,0.45); }
+body.dark .nav-item:hover       { color: #F8FAFC; }
+body.dark .nav-item.active      { color: #F8FAFC; }
+/* Section labels */
+body.dark .section-label { color: #34D399; background: rgba(0,220,130,0.07); border-color: rgba(0,220,130,0.15); }
+/* Cards — drop light shadows, use dark hovers */
+body.dark .feature-card { box-shadow: none; }
+body.dark .feature-card:hover  { border-color: rgba(255,255,255,0.1);  box-shadow: 0 12px 40px rgba(0,0,0,0.55); }
+body.dark .review-card:hover   { border-color: rgba(255,255,255,0.1);  box-shadow: 0 8px 32px  rgba(0,0,0,0.45); }
+body.dark .coming-soon-card:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+/* FAQ */
+body.dark .faq-item:hover { border-color: rgba(255,255,255,0.12); }
+body.dark .faq-item.open  { border-color: rgba(255,255,255,0.16); }
+body.dark .faq-answer-inner { border-top-color: rgba(255,255,255,0.06); }
+body.dark .faq-item.open .faq-question .chevron { color: #34D399; }
+/* CTA card */
+body.dark .cta-card { background: rgba(255,255,255,0.03); box-shadow: none; }
+/* Feature icon colours stay vibrant on dark — already use rgba with var() */
+/* Hero badge */
+body.dark .hero-badge { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+/* Social proof */
+body.dark .social-proof-inner { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07); }
+/* Step numbers */
+body.dark .step-num { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); color: #34D399; font-weight: 500; }
+/* Glows */
+body.dark .bg-glow   { background: radial-gradient(circle, rgba(0,220,130,0.055) 0%, rgba(59,130,246,0.03) 40%, transparent 70%); }
+body.dark .mouse-glow{ background: radial-gradient(circle, rgba(0,220,130,0.045) 0%, rgba(59,130,246,0.02) 40%, transparent 70%); }
+/* Steps timeline */
+body.dark .steps::before { opacity: 0.2; }
+
+/* ─── Hero ─── */
+.hero {
+  position: relative;
+  padding: 80px 0 48px;
+  text-align: center;
+  overflow: hidden;
+  min-height: 30vh;
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 768px) { .hero { padding: 120px 0 56px; } }
+#chart-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero .container { width: 100%; }
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.09);
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  animation: fadeInDown 0.6s ease;
+  letter-spacing: 0.01em;
+}
+.hero-badge .pulse {
+  width: 7px; height: 7px;
+  background: #059669;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(36px, 5.5vw, 70px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-align: center;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+/* ─── Rotating animated word ─── */
+.hero h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .hero h1 {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    white-space: normal;
+    font-size: 36px;
+  }
+  .hero-h1-animated { width: 100% !important; align-self: stretch; }
+}
+.hero-h1-static {
+  display: inline-block;
+  flex-shrink: 0;
+  color: var(--text-primary);
+  font-weight: 400;
+  font-size: 0.9em;
+  letter-spacing: -0.03em;
+}
+.hero-h1-animated {
+  display: inline-block;
+  position: relative;
+  height: 1.12em;
+  overflow: hidden;
+}
+.rotating-word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-start;
+  font-weight: 900;
+  color: var(--text-primary);
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rotating-word.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.rotating-word.exit {
+  opacity: 0;
+  transform: translateY(-60px);
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in;
+}
+@media (max-width: 767px) {
+  .rotating-word { justify-content: center; }
+}
+.hero p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 720px;
+  margin: 0 auto;
+  animation: fadeInUp 0.6s ease 0.2s both;
+}
+@media (min-width: 1024px) { .hero p { font-size: 18px; max-width: 720px; } }
+.hero-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  animation: fadeInUp 0.6s ease 0.3s both;
+}
+@media (min-width: 480px) { .hero-buttons { flex-direction: row; justify-content: center; } }
+
+/* ─── Social Proof ─── */
+.social-proof {
+  animation: fadeInUp 0.6s ease 0.4s both;
+}
+.social-proof-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 22px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 60px;
+}
+.avatars { display: flex; }
+.avatars .avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+  margin-left: -8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.avatars .avatar:first-child { margin-left: 0; }
+.avatar-1 { background: linear-gradient(135deg, #00DC82, #059669); }
+.avatar-2 { background: linear-gradient(135deg, #3B82F6, #6366F1); }
+.avatar-3 { background: linear-gradient(135deg, #22D3EE, #0EA5E9); }
+.avatar-4 { background: linear-gradient(135deg, #F59E0B, #EF4444); }
+.social-proof-text { font-size: 13px; color: var(--text-secondary); }
+.social-proof-text strong { color: var(--text-primary); font-weight: 600; }
+
+/* ─── Section Titles ─── */
+.section-label {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #047857;
+  margin-bottom: 16px;
+  padding: 5px 12px;
+  background: rgba(5,150,105,0.08);
+  border: 1px solid rgba(5,150,105,0.2);
+  border-radius: 4px;
+}
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+.mobile-only { display: none; }
+@media (max-width: 767px) { .mobile-only { display: inline; } }
+.section-title-accent {
+  display: block;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+@media (min-width: 768px)  { .section-title { font-size: 38px; } }
+@media (min-width: 1024px) { .section-title { font-size: 44px; } }
+.section-desc {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 500px;
+}
+
+/* ─── Features ─── */
+.features { padding: 48px 0; }
+@media (min-width: 1024px) { .features { padding: 56px 0; } }
+.features-header { text-align: center; margin-bottom: 32px; }
+.features-header .section-desc { margin: 0 auto; }
+/* ── Bento Feature Grid ── */
+.features-bento { display: flex; flex-direction: column; gap: 14px; }
+.bento-top { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.bento-mid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+@media (max-width: 767px) {
+  .bento-top, .bento-mid { grid-template-columns: 1fr; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .bento-mid { grid-template-columns: repeat(2,1fr); }
+}
+.bento-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.bento-card:hover { transform: translateY(-3px); border-color: rgba(0,0,0,0.13); box-shadow: 0 12px 40px rgba(0,0,0,0.10); }
+body.dark .bento-card { box-shadow: none; }
+body.dark .bento-card:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 12px 40px rgba(0,0,0,0.55); }
+.bento-vis {
+  background: rgba(247,244,239,0.6);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 24px 24px 0;
+}
+.bento-top .bento-vis { height: 200px; }
+.bento-mid .bento-vis { height: 155px; }
+body.dark .bento-vis { background: rgba(255,255,255,0.025); border-bottom-color: rgba(255,255,255,0.06); }
+.bento-body { padding: 22px 24px 20px; }
+.bento-body h3 { font-size: 16px; font-weight: 600; letter-spacing: 0.01em; margin-bottom: 10px; color: var(--text-primary); font-family: var(--font-mono); }
+.bento-body p { font-size: 13px; line-height: 1.7; color: var(--text-secondary); }
+/* All bento tags match section-label styling */
+.bento-body .feature-tag,
+.bento-body .feature-tag.blue,
+.bento-body .feature-tag.cyan,
+.bento-body .feature-tag.gold,
+.bento-body .feature-tag.purple {
+  color: #047857;
+  background: rgba(5,150,105,0.08);
+  border-color: rgba(5,150,105,0.2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+body.dark .bento-body h3 { color: var(--text-primary); }
+body.dark .bento-body .feature-tag,
+body.dark .bento-body .feature-tag.blue,
+body.dark .bento-body .feature-tag.cyan,
+body.dark .bento-body .feature-tag.gold,
+body.dark .bento-body .feature-tag.purple {
+  color: #34D399;
+  background: rgba(0,220,130,0.07);
+  border-color: rgba(0,220,130,0.15);
+}
+/* Featured full-width card */
+.bento-card.featured-card { border-color: rgba(245,183,50,0.22); background: linear-gradient(135deg, rgba(245,183,50,0.05) 0%, var(--bg-card) 60%); }
+.featured-inner { display: grid; grid-template-columns: 240px 1fr; }
+.featured-vis { border-right: 1px solid rgba(245,183,50,0.18); background: rgba(245,183,50,0.04); padding: 28px; display: flex; align-items: center; justify-content: center; min-height: 160px; }
+.featured-body { padding: 28px 32px; display: flex; flex-direction: column; justify-content: center; }
+.featured-body h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.featured-body p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+@media (max-width: 767px) {
+  .featured-inner { grid-template-columns: 1fr; }
+  .featured-vis { border-right: none; border-bottom: 1px solid rgba(245,183,50,0.18); }
+}
+
+/* Feature tags */
+.feature-tag {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 6px; margin-top: 14px;
+  background: rgba(0,220,130,0.07); color: var(--accent-green);
+  letter-spacing: 0.04em; border: 1px solid rgba(0,220,130,0.12);
+}
+.feature-tag.blue   { background: rgba(59,130,246,0.07);  color: var(--accent-blue);  border-color: rgba(59,130,246,0.12); }
+.feature-tag.cyan   { background: rgba(34,211,238,0.07);  color: var(--accent-cyan);  border-color: rgba(34,211,238,0.12); }
+.feature-tag.gold   { background: rgba(245,183,50,0.08);  color: var(--accent-gold);  border-color: rgba(245,183,50,0.15); }
+.feature-tag.purple { background: rgba(139,92,246,0.07);  color: #8B5CF6;             border-color: rgba(139,92,246,0.12); }
+
+/* ── Mock Illustrations ── */
+/* Bar chart */
+.bv-chart { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+.bv-chart-bars { display: flex; align-items: flex-end; gap: 7px; height: 130px; width: 100%; }
+.bv-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end; }
+.bv-bar-col .bv-bar { width: 100%; background: rgba(0,0,0,0.08); border-radius: 5px 5px 0 0; }
+.bv-bar-col.live .bv-bar { background: var(--accent-green); }
+.bv-bar-col.dim  .bv-bar { background: rgba(0,0,0,0.04); }
+.bv-bar-col span { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); padding-bottom: 6px; }
+.bv-bar-col.live span { color: var(--accent-green); font-weight: 600; }
+body.dark .bv-bar-col      .bv-bar { background: rgba(255,255,255,0.08); }
+body.dark .bv-bar-col.dim  .bv-bar { background: rgba(255,255,255,0.03); }
+/* Market brief */
+.bv-brief { background: white; border-radius: 14px; overflow: hidden; width: 100%; max-width: 340px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.06); margin-bottom: 4px; }
+body.dark .bv-brief { background: #1E1C1A; border-color: rgba(255,255,255,0.07); }
+.bv-brief-head { padding: 10px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; }
+body.dark .bv-brief-head { border-bottom-color: rgba(255,255,255,0.06); }
+.bv-brief-title { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); }
+.bv-brief-date  { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); background: rgba(0,0,0,0.04); padding: 3px 8px; border-radius: 5px; }
+.bv-zoom-badge  { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #2D8CFF; font-family: var(--font-mono); }
+body.dark .bv-brief-date { background: rgba(255,255,255,0.06); }
+.bv-brief-row { padding: 9px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+body.dark .bv-brief-row { border-bottom-color: rgba(255,255,255,0.04); }
+.bv-brief-row:last-child { border-bottom: none; }
+.bv-ticker { font-size: 11px; font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); min-width: 52px; }
+.bv-bias { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 5px; flex-shrink: 0; }
+.bv-bias.bull { background: rgba(0,220,130,0.1); color: #059669; }
+.bv-bias.neut { background: rgba(0,0,0,0.05); color: var(--text-secondary); }
+body.dark .bv-bias.neut { background: rgba(255,255,255,0.06); }
+.bv-level { font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary); margin-left: auto; }
+/* Video recap */
+.bv-video { width: 100%; height: 100%; position: relative; background: linear-gradient(135deg, #1A1814 0%, #2A2520 100%); display: flex; align-items: center; justify-content: center; }
+.bv-video::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,0.012) 28px, rgba(255,255,255,0.012) 29px); }
+.bv-play { width: 44px; height: 44px; background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; padding-left: 3px; }
+.bv-video-tag { position: absolute; bottom: 10px; right: 10px; font-size: 10px; font-family: var(--font-mono); color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.4); padding: 3px 8px; border-radius: 5px; z-index: 1; }
+/* Modules */
+.bv-modules { width: 100%; display: flex; flex-direction: column; gap: 5px; }
+.bv-mod { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; padding: 7px 10px; border-radius: 8px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.06); color: var(--text-primary); }
+body.dark .bv-mod { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); }
+.bv-mod-icon { font-size: 10px; width: 14px; text-align: center; flex-shrink: 0; }
+.bv-mod.done   .bv-mod-icon { color: var(--accent-green); }
+.bv-mod.active { border-color: rgba(59,130,246,0.25); background: rgba(59,130,246,0.05); }
+.bv-mod.active .bv-mod-icon { color: var(--accent-blue); }
+.bv-mod.locked { opacity: 0.38; }
+/* Community */
+.bv-community { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.bv-avatars { display: flex; }
+.bv-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2.5px solid var(--bg-primary); margin-left: -10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; }
+.bv-avatars .bv-avatar:first-child { margin-left: 0; }
+.bv-online { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary); background: rgba(0,220,130,0.06); border: 1px solid rgba(0,220,130,0.12); padding: 5px 12px; border-radius: 20px; }
+.bv-online-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; flex-shrink: 0; }
+/* Calendar */
+.bv-calendar { background: white; border-radius: 14px; padding: 14px; width: 100%; max-width: 196px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(245,183,50,0.2); }
+body.dark .bv-calendar { background: #1E1C1A; border-color: rgba(245,183,50,0.15); }
+.bv-cal-head { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--accent-gold); margin-bottom: 12px; }
+.bv-cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; margin-bottom: 10px; }
+.bv-cal-day { height: 26px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-family: var(--font-mono); border-radius: 5px; color: var(--text-secondary); }
+.bv-cal-day.sel { background: var(--accent-gold); color: white; font-weight: 700; }
+.bv-cal-day.dim { opacity: 0.3; }
+.bv-cal-booked { display: flex; align-items: center; gap: 6px; font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); border-top: 1px solid rgba(0,0,0,0.06); padding-top: 8px; }
+body.dark .bv-cal-booked { border-top-color: rgba(255,255,255,0.06); }
+
+/* Bento pair — 2-col medium row */
+.bento-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 767px) { .bento-pair { grid-template-columns: 1fr; } }
+.bento-pair .bento-vis { height: 170px; }
+
+/* Zoom video call illustration */
+.bv-zoom { width: 100%; height: 100%; background: #1A1814; display: flex; flex-direction: column; }
+.bv-zoom-header { padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); }
+.bv-zoom-title { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.65); font-family: var(--font-mono); }
+.bv-zoom-live { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--accent-green); font-family: var(--font-mono); font-weight: 600; }
+.bv-zoom-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; }
+.bv-zoom-tile { background: #2A2520; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border-radius: 4px; }
+.bv-zoom-tile.host { background: rgba(0,220,130,0.08); outline: 1px solid rgba(0,220,130,0.25); }
+.bv-zoom-tile-init { font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.6); }
+.bv-zoom-tile.host .bv-zoom-tile-init { color: var(--accent-green); }
+.bv-zoom-tile-name { font-size: 8px; color: rgba(255,255,255,0.3); font-family: var(--font-mono); }
+.bv-zoom-controls { padding: 7px 12px; display: flex; justify-content: center; gap: 7px; background: rgba(0,0,0,0.2); }
+.bv-zoom-ctrl { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.65); }
+.bv-zoom-ctrl.end { background: rgba(239,68,68,0.35); color: white; }
+
+/* Trade recap card illustration */
+.bv-trade-card { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.06); }
+body.dark .bv-trade-card { background: #1E1C1A; border-color: rgba(255,255,255,0.07); }
+.bv-trade-head { padding: 9px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+body.dark .bv-trade-head { border-bottom-color: rgba(255,255,255,0.05); }
+.bv-trade-inst { font-size: 12px; font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); }
+.bv-trade-dir { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.04em; }
+.bv-trade-dir.long { background: rgba(0,220,130,0.12); color: #059669; }
+.bv-trade-result { margin-left: auto; font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: #059669; }
+.bv-trade-chart-wrap { padding: 6px 12px; }
+.bv-trade-footer { padding: 7px 14px; display: flex; gap: 14px; border-top: 1px solid rgba(0,0,0,0.04); }
+body.dark .bv-trade-footer { border-top-color: rgba(255,255,255,0.04); }
+.bv-trade-footer span { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); }
+.bv-trade-footer .lbl { color: var(--text-secondary); font-weight: 600; }
+
+/* Calendar v2 illustration */
+.bv-calendar-v2 { background: white; border-radius: 14px; padding: 14px; width: 100%; max-width: 224px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(245,183,50,0.18); }
+body.dark .bv-calendar-v2 { background: #1E1C1A; border-color: rgba(245,183,50,0.15); }
+.bv-cal-v2-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.bv-cal-v2-month { font-size: 11px; font-weight: 700; color: var(--text-primary); }
+.bv-cal-v2-btn { font-size: 14px; color: var(--text-muted); line-height: 1; }
+.bv-cal-v2-wdays { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; margin-bottom: 3px; }
+.bv-cal-v2-wday { font-size: 9px; text-align: center; color: var(--text-muted); font-family: var(--font-mono); font-weight: 600; }
+.bv-cal-v2-dates { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; margin-bottom: 8px; }
+.bv-cal-v2-date { height: 20px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-family: var(--font-mono); border-radius: 4px; color: var(--text-secondary); }
+.bv-cal-v2-date.sel { background: var(--accent-gold); color: white; font-weight: 700; border-radius: 50%; }
+.bv-cal-v2-date.dim { opacity: 0.25; }
+.bv-cal-v2-event { display: flex; align-items: center; gap: 6px; font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); border-top: 1px solid rgba(0,0,0,0.06); padding-top: 8px; }
+body.dark .bv-cal-v2-event { border-top-color: rgba(255,255,255,0.06); }
+.bv-cal-v2-event-dot { width: 8px; height: 8px; background: var(--accent-gold); border-radius: 2px; flex-shrink: 0; }
+
+/* ─── Coming Soon ─── */
+.coming-soon { padding: 48px 0; }
+@media (min-width: 1024px) { .coming-soon { padding: 56px 0; } }
+.coming-soon-header { text-align: center; margin-bottom: 40px; }
+.coming-soon-grid { display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 600px) {
+  .coming-soon-grid { flex-direction: row; gap: 20px; }
+  .coming-soon-card { flex: 1; }
+}
+.coming-soon-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px dashed rgba(148,163,184,0.12);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  position: relative;
+  transition: all 0.25s ease;
+}
+.coming-soon-card:hover {
+  border-color: rgba(0,0,0,0.12);
+  border-style: solid;
+  background: var(--bg-card-hover);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+.coming-soon-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  background: rgba(148,163,184,0.06);
+  color: var(--text-secondary);
+  border: 1px solid rgba(148,163,184,0.1);
+}
+.coming-soon-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.02em; }
+.coming-soon-card p  { font-size: 14px; line-height: 1.75; color: var(--text-secondary); }
+.coming-soon-badge {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-top: 16px;
+  background: rgba(148,163,184,0.06);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(148,163,184,0.1);
+  animation: badgePulse 3s ease-in-out infinite;
+}
+@keyframes badgePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* ─── How It Works ─── */
+.how-it-works { padding: 48px 0; }
+@media (min-width: 1024px) { .how-it-works { padding: 56px 0; } }
+.how-it-works-header { text-align: center; margin-bottom: 32px; }
+.how-it-works-header .section-desc { margin: 0 auto; }
+
+.steps { display: flex; flex-direction: column; gap: 0; position: relative; }
+.steps::before {
+  content: '';
+  position: absolute;
+  left: 25px; top: 52px; bottom: 52px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--accent-green), var(--accent-blue), var(--accent-cyan));
+  opacity: 0.15;
+}
+@media (min-width: 1024px) {
+  .steps { flex-direction: row; align-items: flex-start; }
+  .steps::before {
+    left: 44px; right: 44px; top: 25px; bottom: auto;
+    width: auto; height: 1px;
+    background: linear-gradient(to right, var(--accent-green), var(--accent-blue), var(--accent-cyan));
+  }
+  .step { flex: 1; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; gap: 20px; }
+  .step-content h3 { font-size: 15px; }
+  .step-content p  { font-size: 13px; }
+}
+.step { display: flex; gap: 20px; padding: 24px 0; position: relative; }
+.step-num {
+  width: 50px; height: 50px; min-width: 50px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 500; font-size: 13px;
+  letter-spacing: 0.14em;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0,220,130,0.2);
+  color: #047857;
+  z-index: 1;
+}
+.step.visible .step-num { animation: stepGlow 0.8s ease 0.2s both; }
+@keyframes stepGlow {
+  0%   { box-shadow: 0 0 0  0 rgba(0,220,130,0); }
+  50%  { box-shadow: 0 0 24px 4px rgba(0,220,130,0.2); }
+  100% { box-shadow: 0 0 0  0 rgba(0,220,130,0); }
+}
+.step-content h3 { font-size: 17px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em; }
+.step-content p  { font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+
+/* ─── Reviews ─── */
+.reviews { padding: 48px 0; }
+@media (min-width: 1024px) { .reviews { padding: 56px 0; } }
+.reviews-header { text-align: center; margin-bottom: 40px; }
+/* Scrolling columns */
+.testimonials-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  max-height: 680px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+}
+.testimonials-col { flex: 0 0 auto; }
+.testimonials-col.col-2,
+.testimonials-col.col-3 { display: none; }
+@media (min-width: 768px)  { .testimonials-col.col-2 { display: block; } }
+@media (min-width: 1024px) { .testimonials-col.col-3 { display: block; } }
+.testimonials-track {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 20px;
+  will-change: transform;
+  animation: testimonialsScroll var(--dur, 15s) linear infinite;
+}
+@keyframes testimonialsScroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+.review-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  width: 280px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transition: all 0.25s ease;
+}
+body.dark .review-card { box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+.review-card:hover {
+  border-color: rgba(5,150,105,0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.09);
+}
+.review-avatar-img {
+  width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+}
+.review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.review-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.08);
+}
+.review-avatar.green { background: linear-gradient(135deg,rgba(0,220,130,0.2),rgba(0,220,130,0.07)); color: var(--accent-green); }
+.review-avatar.blue  { background: linear-gradient(135deg,rgba(59,130,246,0.2),rgba(59,130,246,0.07)); color: var(--accent-blue); }
+.review-avatar.cyan  { background: linear-gradient(135deg,rgba(34,211,238,0.2),rgba(34,211,238,0.07)); color: var(--accent-cyan); }
+.review-name  { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.review-since { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.review-stars { color: var(--accent-gold); font-size: 13px; letter-spacing: 2px; margin-bottom: 12px; }
+.review-text  { font-size: 14px; line-height: 1.75; color: var(--text-secondary); font-style: italic; }
+.review-text::before { content: '\201C'; }
+.review-text::after  { content: '\201D'; }
+
+/* ─── CTA ─── */
+.cta { padding: 48px 0; text-align: center; }
+@media (min-width: 1024px) { .cta { padding: 56px 0; } }
+.cta-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,250,248,0.95) 100%);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 28px;
+  padding: 56px 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+}
+@media (min-width: 1024px) {
+  .cta-card { padding: 72px 64px; max-width: 820px; margin: 0 auto; }
+  .cta-card h2 { font-size: 44px; }
+  .cta-card p  { font-size: 18px; max-width: 460px; }
+}
+.cta-card h2 {
+  font-family: var(--font-heading);
+  font-size: 32px; font-weight: 400;
+  line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 16px; position: relative;
+}
+.cta-card p {
+  font-size: 16px; line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 380px;
+  margin: 0 auto 32px;
+  position: relative;
+}
+
+/* ─── FAQ ─── */
+.faq { padding: 48px 0; }
+@media (min-width: 1024px) { .faq { padding: 56px 0; } }
+.faq-header { text-align: center; margin-bottom: 48px; }
+.faq-list { display: flex; flex-direction: column; gap: 8px; max-width: 800px; margin: 0 auto; }
+@media (min-width: 768px) {
+  .faq-list { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; max-width: none; }
+}
+.faq-item {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.faq-item:hover { border-color: rgba(0,0,0,0.14); }
+.faq-item.open  { border-color: rgba(0,0,0,0.18); }
+.faq-question {
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; gap: 16px;
+  font-size: 15px; font-weight: 600;
+  user-select: none; letter-spacing: -0.01em;
+}
+.faq-question .chevron {
+  color: var(--text-muted);
+  transition: transform 0.25s ease, color 0.25s ease;
+  flex-shrink: 0; display: flex;
+}
+.faq-item.open .faq-question .chevron { transform: rotate(180deg); color: var(--accent-green); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-answer-inner {
+  padding: 16px 24px 20px;
+  font-size: 14px; line-height: 1.75;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ─── Footer ─── */
+footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+footer p { font-size: 13px; color: var(--text-muted); }
+footer a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s ease; }
+footer a:hover { color: var(--text-primary); }
+footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset: 3px; border-radius: 2px; }
+.footer-links { display: flex; justify-content: center; gap: 28px; margin-bottom: 20px; }
+
+/* ─── Keyframes ─── */
+@keyframes fadeInUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0);  } }
+@keyframes fadeInDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes pulse      { 0%,100% { opacity:1; transform:scale(1);   } 50% { opacity:0.45; transform:scale(0.85); } }
+
+/* ─── Scroll Reveal ─── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ─── Mobile-specific overrides ─── */
+@media (max-width: 767px) {
+  /* 1. Smaller badge */
+  .hero-badge { font-size: 11px; padding: 5px 12px; gap: 6px; }
+  .hero-badge .pulse { width: 6px; height: 6px; }
+
+  /* 2. Bigger hero heading */
+  .hero h1 { font-size: 44px; }
+
+  /* 3. Smaller hero description */
+  .hero p { font-size: 14px; }
+
+  /* 4. Smaller social proof pill */
+  .social-proof-inner { padding: 8px 14px; gap: 10px; }
+  .avatars .avatar { width: 24px; height: 24px; font-size: 10px; margin-left: -6px; }
+  .social-proof-text { font-size: 11px; }
+
+  /* 5. Tighter section spacing */
+  .features, .how-it-works, .reviews, .coming-soon, .faq, .cta { padding: 32px 0; }
+
+  /* 6. Hide background particles */
+  #particles-canvas { display: none; }
+
+  /* 8. Hide coming soon icons */
+  .coming-soon-icon { display: none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="chart-canvas"></canvas>
+<div class="bg-glow"></div>
+<canvas id="particles-canvas"></canvas>
+<div class="mouse-glow" id="mouseGlow"></div>
+
+<!-- ─── Logo + theme toggle (fixed top-left) ─── -->
+<div class="site-top-left">
+  <a href="#" class="site-logo">
+    <img src="logo-white.png" alt="Flow Traders Collective">
+  </a>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <div class="toggle-thumb">
+      <svg class="tog-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="tog-sun"  width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </div>
+    <div class="toggle-idle">
+      <svg class="tog-sun-idle"  width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="tog-moon-idle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </div>
+  </button>
+</div>
+
+<!-- ─── CTA (fixed top-right, desktop only) ─── -->
+<a href="https://www.launchpass.com/flow-traders-collective/discord-b" class="site-nav-cta flow-btn">
+  <svg class="flow-arr flow-arr-l" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  <span class="flow-btn-text">Join Community</span>
+  <span class="flow-btn-blob"></span>
+  <svg class="flow-arr flow-arr-r" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+</a>
+
+<!-- ─── Tubelight Nav ─── -->
+<nav id="navbar">
+  <div class="tubelight-pill" id="tubelightPill">
+    <div class="tubelight-bg" id="tubelightBg"></div>
+
+    <a href="#hero" class="nav-item" data-section="hero">
+      <span class="nav-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </span>
+      <span class="nav-label">Home</span>
+    </a>
+
+    <a href="#features" class="nav-item" data-section="features">
+      <span class="nav-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </span>
+      <span class="nav-label">Features</span>
+    </a>
+
+    <a href="#how-it-works" class="nav-item" data-section="how-it-works">
+      <span class="nav-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </span>
+      <span class="nav-label">How It Works</span>
+    </a>
+
+    <a href="#reviews" class="nav-item" data-section="reviews">
+      <span class="nav-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </span>
+      <span class="nav-label">Reviews</span>
+    </a>
+
+    <a href="#faq" class="nav-item" data-section="faq">
+      <span class="nav-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
+      </span>
+      <span class="nav-label">FAQ</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-badge"><span class="pulse"></span> Now accepting new members</div>
+      <h1>
+        <span class="hero-h1-static">Markets reward</span>
+        <span class="hero-h1-animated">
+          <span class="rotating-word active">confidence</span>
+          <span class="rotating-word">structure</span>
+          <span class="rotating-word">discipline</span>
+          <span class="rotating-word">consistency</span>
+          <span class="rotating-word">precision</span>
+        </span>
+      </h1>
+      <p>Most trading communities bury you in noise. Flow Traders Collective is different — built around one thing: helping traders reach consistency with a simple approach through live calls, daily outlooks and real trade breakdowns.</p>
+      <div class="hero-buttons">
+        <a href="#features" class="btn-secondary flow-btn">
+          <svg class="flow-arr flow-arr-l" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="flow-btn-text">See what's inside</span>
+          <span class="flow-btn-blob"></span>
+          <svg class="flow-arr flow-arr-r" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="https://www.launchpass.com/flow-traders-collective/discord-b" class="btn-dark flow-btn flow-btn-filled">
+          <svg class="flow-arr flow-arr-l" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="flow-btn-text">Join community</span>
+          <span class="flow-btn-blob"></span>
+          <svg class="flow-arr flow-arr-r" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="social-proof">
+        <div class="social-proof-inner">
+          <div class="avatars">
+            <div class="avatar avatar-1" aria-hidden="true">A</div>
+            <div class="avatar avatar-2" aria-hidden="true">N</div>
+            <div class="avatar avatar-3" aria-hidden="true">T</div>
+            <div class="avatar avatar-4" aria-hidden="true">M</div>
+          </div>
+          <div class="social-proof-text"><strong>Active traders</strong> growing every week</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Features ─── -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <span class="section-label">What You Get</span>
+      <h2 class="section-title">Everything You Need to<br><span class="section-title-accent">Trade With Confidence</span></h2>
+      <p class="section-desc">A structured approach to help you become consistent, pass funding challenges and grow as a trader.</p>
+    </div>
+
+    <div class="features-bento">
+
+      <!-- Row 1: Live Calls + Morning Outlooks (large) -->
+      <div class="bento-top">
+
+        <!-- Live Weekly Calls — schedule card -->
+        <div class="bento-card reveal">
+          <div class="bento-vis" style="align-items:center; padding:24px;" aria-hidden="true">
+            <div class="bv-brief">
+              <div class="bv-brief-head">
+                <span class="bv-brief-title">Weekly Schedule</span>
+                <span class="bv-zoom-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7" fill="#2D8CFF"/><rect x="1" y="5" width="15" height="14" rx="2" fill="#2D8CFF"/></svg>
+                  Zoom
+                </span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">Wednesday</span>
+                <span class="bv-bias bull">Live</span>
+                <span class="bv-level">9:00 PM</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">Sunday</span>
+                <span class="bv-bias bull">Live</span>
+                <span class="bv-level">10:00 AM</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">Recordings</span>
+                <span class="bv-bias neut">Uploaded</span>
+                <span class="bv-level">Always</span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-body">
+            <h3>Live Weekly Calls</h3>
+            <p>Twice a week, we go live to review trades taken, discuss what's ahead and answer your questions in real time. No fluff — just actionable insight.</p>
+            <span class="feature-tag">2x per week</span>
+          </div>
+        </div>
+
+        <!-- Daily Morning Outlooks -->
+        <div class="bento-card reveal">
+          <div class="bento-vis" style="align-items:center; padding:24px;" aria-hidden="true">
+            <div class="bv-brief">
+              <div class="bv-brief-head">
+                <span class="bv-brief-title">Morning Brief</span>
+                <span class="bv-brief-date" style="color:#2D8CFF; background:rgba(45,140,255,0.08); border:1px solid rgba(45,140,255,0.15);">Wed 25 Mar</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">NAS100</span>
+                <span class="bv-bias bull">Bullish</span>
+                <span class="bv-level">21,540</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">SPX500</span>
+                <span class="bv-bias neut">Neutral</span>
+                <span class="bv-level">5,712</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">DAX</span>
+                <span class="bv-bias bull">Bullish</span>
+                <span class="bv-level">22,891</span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-body">
+            <h3>Daily Morning Outlooks</h3>
+            <p>Every morning, get a detailed breakdown of NAS100, SPX500 and DAX — including key levels, bias and what setups to watch for before the session opens.</p>
+            <span class="feature-tag blue">Every trading day</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Trade Recaps + Strategy Education -->
+      <div class="bento-pair">
+
+        <!-- Trade Recaps — trade summary card -->
+        <div class="bento-card reveal">
+          <div class="bento-vis" style="align-items:center; padding:20px;" aria-hidden="true">
+            <div class="bv-trade-card">
+              <div class="bv-trade-head">
+                <span class="bv-trade-inst">NAS100</span>
+                <span class="bv-trade-dir long">LONG</span>
+                <span class="bv-trade-result">+2.4R ✓</span>
+              </div>
+              <div class="bv-trade-chart-wrap">
+                <svg width="100%" height="44" viewBox="0 0 240 44" preserveAspectRatio="none">
+                  <polyline points="0,34 22,32 44,35 66,31 88,33 110,30" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1.5"/>
+                  <path d="M110,30 C122,26 134,20 152,14 S178,5 198,3 L220,2 L240,2" fill="none" stroke="#00DC82" stroke-width="1.5"/>
+                  <path d="M110,30 C122,26 134,20 152,14 S178,5 198,3 L220,2 L240,2 L240,44 L110,44 Z" fill="rgba(0,220,130,0.06)"/>
+                  <circle cx="110" cy="30" r="3.5" fill="#3B82F6"/>
+                  <circle cx="220" cy="2" r="3.5" fill="#00DC82"/>
+                </svg>
+              </div>
+              <div class="bv-trade-footer">
+                <span><span class="lbl">Entry </span>21,420</span>
+                <span><span class="lbl">Exit </span>21,680</span>
+                <span><span class="lbl">+2h 15m</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-body">
+            <h3>Trade Recaps</h3>
+            <p>Recorded walkthroughs of real trades — entry, management and exit explained in full, so you understand the thinking behind every decision.</p>
+            <span class="feature-tag cyan">Recorded &amp; uploaded</span>
+          </div>
+        </div>
+
+        <!-- Strategy Education -->
+        <div class="bento-card reveal">
+          <div class="bento-vis" style="align-items:flex-start; padding:16px 16px 0;" aria-hidden="true">
+            <div class="bv-modules">
+              <div class="bv-mod done"><span class="bv-mod-icon">✓</span>Market Structure</div>
+              <div class="bv-mod done"><span class="bv-mod-icon">✓</span>Entry Triggers</div>
+              <div class="bv-mod active"><span class="bv-mod-icon">→</span>Risk Management</div>
+              <div class="bv-mod locked"><span class="bv-mod-icon">○</span>Trade Management</div>
+            </div>
+          </div>
+          <div class="bento-body">
+            <h3>Strategy Education</h3>
+            <p>A library of videos breaking down the core strategy — from structure to entries — so you understand the "why" behind every trade.</p>
+            <span class="feature-tag">Foundation videos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Community + Quarterly Review -->
+      <div class="bento-pair">
+
+        <!-- Community & Support — brief-style card -->
+        <div class="bento-card reveal">
+          <div class="bento-vis" style="align-items:center; padding:24px;" aria-hidden="true">
+            <div class="bv-brief">
+              <div class="bv-brief-head">
+                <span class="bv-brief-title">Community</span>
+                <span class="bv-brief-date">Today</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">Trade Ideas</span>
+                <span class="bv-bias bull">Shared</span>
+                <span class="bv-level">Daily</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">Q&amp;A Support</span>
+                <span class="bv-bias bull">Open</span>
+                <span class="bv-level">Always</span>
+              </div>
+              <div class="bv-brief-row">
+                <span class="bv-ticker">Accountability</span>
+                <span class="bv-bias neut">Active</span>
+                <span class="bv-level">Daily</span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-body">
+            <h3>Community &amp; Support</h3>
+            <p>Surround yourself with like-minded traders. Share ideas, get feedback on your charts, ask questions and hold each other accountable — because serious trading doesn't have to be a solo journey.</p>
+            <span class="feature-tag purple">Always active</span>
+          </div>
+        </div>
+
+        <!-- Free 1-1 Quarterly Review — better calendar -->
+        <div class="bento-card reveal" style="border-color: rgba(245,183,50,0.22); background: linear-gradient(135deg, rgba(245,183,50,0.05) 0%, var(--bg-card) 60%);">
+          <div class="bento-vis" style="align-items:center; padding:20px; background: rgba(245,183,50,0.04); border-bottom-color: rgba(245,183,50,0.15);" aria-hidden="true">
+            <div class="bv-calendar-v2">
+              <div class="bv-cal-v2-nav">
+                <span class="bv-cal-v2-btn">‹</span>
+                <span class="bv-cal-v2-month">April 2026</span>
+                <span class="bv-cal-v2-btn">›</span>
+              </div>
+              <div class="bv-cal-v2-wdays">
+                <span class="bv-cal-v2-wday">M</span><span class="bv-cal-v2-wday">T</span><span class="bv-cal-v2-wday">W</span><span class="bv-cal-v2-wday">T</span><span class="bv-cal-v2-wday">F</span><span class="bv-cal-v2-wday">S</span><span class="bv-cal-v2-wday">S</span>
+              </div>
+              <div class="bv-cal-v2-dates">
+                <span class="bv-cal-v2-date dim">30</span><span class="bv-cal-v2-date dim">31</span><span class="bv-cal-v2-date">1</span><span class="bv-cal-v2-date">2</span><span class="bv-cal-v2-date">3</span><span class="bv-cal-v2-date">4</span><span class="bv-cal-v2-date">5</span>
+                <span class="bv-cal-v2-date">6</span><span class="bv-cal-v2-date">7</span><span class="bv-cal-v2-date">8</span><span class="bv-cal-v2-date sel">9</span><span class="bv-cal-v2-date">10</span><span class="bv-cal-v2-date">11</span><span class="bv-cal-v2-date">12</span>
+                <span class="bv-cal-v2-date">13</span><span class="bv-cal-v2-date">14</span><span class="bv-cal-v2-date">15</span><span class="bv-cal-v2-date">16</span><span class="bv-cal-v2-date">17</span><span class="bv-cal-v2-date">18</span><span class="bv-cal-v2-date">19</span>
+              </div>
+              <div class="bv-cal-v2-event">
+                <span class="bv-cal-v2-event-dot"></span>1-on-1 Review · Apr 9
+              </div>
+            </div>
+          </div>
+          <div class="bento-body">
+            <h3>Free 1-1 Quarterly Review</h3>
+            <p>Members who clearly put in the work earn a free one-on-one quarterly review — a personal deep-dive into your trading, performance and next steps. This isn't handed out — it's earned.</p>
+            <span class="feature-tag gold" style="white-space: nowrap;">Worth €200+ · Must be earned</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── How It Works ─── -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="how-it-works-header reveal">
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title">Your Path to<br><span class="section-title-accent">Consistent Trading</span></h2>
+      <p class="section-desc">A clear structure to take you from learning to earning.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>Learn the Strategy</h3>
+          <p>Start with the educational videos to understand the core approach to trading index CFDs — market structure, entries, risk management.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Follow the Daily Outlooks</h3>
+          <p>Each morning, tune into the market analysis for NAS100, SPX500 and DAX. See where the opportunities are before you open a chart.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Watch the Recaps</h3>
+          <p>Study real trade breakdowns to see how the strategy plays out in live markets. Understand the reasoning behind every decision.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Join the Live Calls</h3>
+          <p>Twice a week, get real-time analysis, Q&A and trade reviews. Ask anything — this is where theory meets practice.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h3>Pass Your Challenge</h3>
+          <p>Apply what you've learned with confidence. The structure, discipline and community support make the difference.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Reviews ─── -->
+<section class="reviews" id="reviews">
+  <div class="container">
+    <div class="reviews-header reveal">
+      <span class="section-label">What Members Say</span>
+      <h2 class="section-title"><span class="section-title-accent">Real Traders,<br class="mobile-only"> Real Results</span></h2>
+    </div>
+    <div class="testimonials-wrap">
+
+      <!-- Column 1 -->
+      <div class="testimonials-col col-1">
+        <div class="testimonials-track" style="--dur:15s">
+          <!-- set 1 -->
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The daily outlooks completely changed my approach. I finally have a structured plan before I even open a chart.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Alexandar M.">
+              <div><div class="review-name">Alexandar M.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">Passed my FTMO challenge within the first month. The live sessions and trade recaps made the difference.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/44.jpg" alt="Nicolai J.">
+              <div><div class="review-name">Nicolai J.</div><div class="review-since">Prop Trader</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">Best trading community I've been part of. George genuinely cares about helping you improve — it shows in every session.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/67.jpg" alt="Thomas V.">
+              <div><div class="review-name">Thomas V.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <!-- set 2 (duplicate for seamless loop) -->
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The daily outlooks completely changed my approach. I finally have a structured plan before I even open a chart.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Alexandar M.">
+              <div><div class="review-name">Alexandar M.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">Passed my FTMO challenge within the first month. The live sessions and trade recaps made the difference.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/44.jpg" alt="Nicolai J.">
+              <div><div class="review-name">Nicolai J.</div><div class="review-since">Prop Trader</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">Best trading community I've been part of. George genuinely cares about helping you improve — it shows in every session.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/67.jpg" alt="Thomas V.">
+              <div><div class="review-name">Thomas V.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2 (tablet+) -->
+      <div class="testimonials-col col-2">
+        <div class="testimonials-track" style="--dur:19s">
+          <!-- set 1 -->
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The morning outlooks alone are worth it. Knowing the key levels before the session opens has made me far more selective with my entries.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/22.jpg" alt="Marcus L.">
+              <div><div class="review-name">Marcus L.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">I've tried three other communities. This is the only one where I actually feel like progress is being made week on week.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/women/28.jpg" alt="Sofia R.">
+              <div><div class="review-name">Sofia R.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The strategy education module finally made structure click for me. Once I understood the why, everything else followed naturally.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/55.jpg" alt="James K.">
+              <div><div class="review-name">James K.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <!-- set 2 -->
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The morning outlooks alone are worth it. Knowing the key levels before the session opens has made me far more selective with my entries.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/22.jpg" alt="Marcus L.">
+              <div><div class="review-name">Marcus L.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">I've tried three other communities. This is the only one where I actually feel like progress is being made week on week.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/women/28.jpg" alt="Sofia R.">
+              <div><div class="review-name">Sofia R.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The strategy education module finally made structure click for me. Once I understood the why, everything else followed naturally.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/55.jpg" alt="James K.">
+              <div><div class="review-name">James K.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 3 (desktop) -->
+      <div class="testimonials-col col-3">
+        <div class="testimonials-track" style="--dur:17s">
+          <!-- set 1 -->
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">Within two weeks I went from revenge trading to following a clear process. The accountability in the group genuinely keeps you honest.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/women/47.jpg" alt="Elisa T.">
+              <div><div class="review-name">Elisa T.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">George answers questions personally in the chat. That kind of access is rare and it makes a huge difference when you're stuck on a concept.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/76.jpg" alt="Daniel F.">
+              <div><div class="review-name">Daniel F.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The trade recaps showed me exactly where I was going wrong. Watching real entries and exits explained step by step is invaluable.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/women/63.jpg" alt="Priya S.">
+              <div><div class="review-name">Priya S.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <!-- set 2 -->
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">Within two weeks I went from revenge trading to following a clear process. The accountability in the group genuinely keeps you honest.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/women/47.jpg" alt="Elisa T.">
+              <div><div class="review-name">Elisa T.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">George answers questions personally in the chat. That kind of access is rare and it makes a huge difference when you're stuck on a concept.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/men/76.jpg" alt="Daniel F.">
+              <div><div class="review-name">Daniel F.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 stars">★★★★★</div>
+            <div class="review-text">The trade recaps showed me exactly where I was going wrong. Watching real entries and exits explained step by step is invaluable.</div>
+            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
+              <img class="review-avatar-img" src="https://randomuser.me/api/portraits/women/63.jpg" alt="Priya S.">
+              <div><div class="review-name">Priya S.</div><div class="review-since">Member</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── Coming Soon ─── -->
+<section class="coming-soon">
+  <div class="container">
+    <div class="coming-soon-header reveal">
+      <span class="section-label">Coming Soon</span>
+      <h2 class="section-title">What's next for<br><span class="section-title-accent">The Collective</span></h2>
+    </div>
+    <div class="coming-soon-grid">
+      <div class="coming-soon-card reveal">
+        <div class="coming-soon-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3>In-Person Meetups</h3>
+        <p>Connect with fellow traders face to face. Real conversations, real connections — taking the community beyond the screen.</p>
+        <span class="coming-soon-badge">Coming soon</span>
+      </div>
+      <div class="coming-soon-card reveal">
+        <div class="coming-soon-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        </div>
+        <h3>Trading Competitions</h3>
+        <p>Put your skills to the test against other members, compete for prizes and push yourself to the next level.</p>
+        <span class="coming-soon-badge">Coming soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-header reveal">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title">Frequently Asked<br><span class="section-title-accent">Questions</span></h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What markets do you trade?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">We focus exclusively on Index CFDs — specifically NAS100 (NASDAQ), SPX500 (S&P 500) and GER40 (DAX). This allows us to specialise and build deep expertise in these markets.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Is this suitable for beginners?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Yes. The educational videos cover the strategy from the ground up, and the daily outlooks and live calls give you real-world context. Whether you're new or experienced, the community is structured to meet you where you are.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>How often are the live calls?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Twice per week. During each call, we review trades taken during the week, discuss expectations for the rest of the week and open the floor for Q&A.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Will this help me pass a prop firm challenge?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">That's one of the key goals. The strategy, outlooks, recaps and community support are all designed to help you build the consistency and discipline needed to pass funding challenges.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What do the morning outlooks include?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Each morning, you get a detailed analysis of NAS100, SPX500 and DAX covering key levels, directional bias and the specific conditions needed to consider a trade. It's your pre-session preparation.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Am I going to get the attention I need?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Short answer: yes. This is intentionally kept as a small community — not a mass-membership platform. That means questions get answered, charts get reviewed and nobody gets lost in the noise. As a member, you're also locked in at your current price. Any future price increases won't affect you.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="cta" id="join">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2>Ready to Level Up<br><span class="section-title-accent">Your Trading?</span></h2>
+      <p>Join Flow Traders Collective and start your journey to consistent, confident trading.</p>
+      <a href="https://www.launchpass.com/flow-traders-collective/discord-b" class="btn-primary flow-btn">
+        <svg class="flow-arr flow-arr-l" viewBox="0 0 24 24" width="15" height="15"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <span class="flow-btn-text">Join the Discord</span>
+        <span class="flow-btn-blob"></span>
+        <svg class="flow-arr flow-arr-r" viewBox="0 0 24 24" width="15" height="15"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://www.launchpass.com/flow-traders-collective/discord-b" target="_blank" rel="noopener">Discord</a>
+      <a href="#">Twitter</a>
+      <a href="#">Contact</a>
+    </div>
+    <p>&copy; 2026 Flow Traders Collective. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// ─── Rotating Words ───
+(function () {
+  const words = Array.from(document.querySelectorAll('.rotating-word'));
+  if (!words.length) return;
+
+  const container = document.querySelector('.hero-h1-animated');
+
+  function measureAndStart() {
+    const cs = getComputedStyle(words[0]);
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-weight:' + cs.fontWeight + ';font-size:' + cs.fontSize + ';letter-spacing:' + cs.letterSpacing + ';font-family:' + cs.fontFamily;
+    document.body.appendChild(probe);
+    let maxW = 0;
+    words.forEach(w => { probe.textContent = w.textContent.trim(); maxW = Math.max(maxW, probe.offsetWidth); });
+    document.body.removeChild(probe);
+    container.style.width = (maxW + 56) + 'px';
+  }
+
+  // Wait for fonts before measuring so DM Serif Display is used, not the fallback
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(measureAndStart);
+  // Re-measure on resize so the container stays correct at all viewport widths
+  window.addEventListener('resize', measureAndStart);
+
+  let current = 0;
+  setInterval(() => {
+    words[current].classList.remove('active');
+    words[current].classList.add('exit');
+    const prev = current;
+    setTimeout(() => words[prev].classList.remove('exit'), 350);
+    current = (current + 1) % words.length;
+    words[current].classList.add('active');
+  }, 2400);
+})();
+
+// ─── FAQ Toggle ───
+function toggleFAQ(el) {
+  const item = el.parentElement;
+  const answer = item.querySelector('.faq-answer');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-answer').style.maxHeight = '0';
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+}
+
+// ─── Scroll Reveal (staggered) ───
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ─── Particles ───
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.8 + 0.4;
+    this.speedX = (Math.random() - 0.5) * 0.25;
+    this.speedY = (Math.random() - 0.5) * 0.25;
+    this.opacity = Math.random() * 0.35 + 0.08;
+    const dark = document.body.classList.contains('dark');
+    this.color = Math.random() > 0.5 ? (dark ? '0,220,130' : '5,150,105') : (dark ? '59,130,246' : '37,99,235');
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+if (!prefersReducedMotion) {
+  const count = window.innerWidth < 768 ? 25 : 55;
+  for (let i = 0; i < count; i++) particles.push(new Particle());
+
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 110) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          const lc = document.body.classList.contains('dark') ? '0,220,130' : '5,150,105';
+          ctx.strokeStyle = `rgba(${lc},${0.06 * (1 - dist / 110)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawLines();
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+}
+
+// ─── Mouse Glow ───
+const mouseGlow = document.getElementById('mouseGlow');
+let mouseTimeout;
+document.addEventListener('mousemove', (e) => {
+  mouseGlow.style.left = e.clientX + 'px';
+  mouseGlow.style.top  = e.clientY + 'px';
+  mouseGlow.classList.add('active');
+  clearTimeout(mouseTimeout);
+  mouseTimeout = setTimeout(() => mouseGlow.classList.remove('active'), 2500);
+});
+
+// ─── Feature Card Tilt ───
+if (!prefersReducedMotion) {
+  document.querySelectorAll('.bento-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const rotX = ((y - rect.height / 2) / rect.height) * -5;
+      const rotY = ((x - rect.width  / 2) / rect.width ) *  5;
+      card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-3px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) translateY(0)';
+    });
+  });
+}
+
+// ─── Tubelight Nav ───
+(function () {
+  const pill    = document.getElementById('tubelightPill');
+  const bg      = document.getElementById('tubelightBg');
+  const navItems = document.querySelectorAll('.nav-item[data-section]');
+
+  function moveIndicator(el) {
+    const pillRect = pill.getBoundingClientRect();
+    const elRect   = el.getBoundingClientRect();
+    bg.style.left  = (elRect.left - pillRect.left) + 'px';
+    bg.style.width = elRect.width + 'px';
+  }
+
+  function setActive(section) {
+    navItems.forEach(item => {
+      const active = item.dataset.section === section;
+      item.classList.toggle('active', active);
+      if (active) moveIndicator(item);
+    });
+  }
+
+  // Initialise indicator on first paint
+  requestAnimationFrame(() => {
+    setActive('hero');
+    const first = document.querySelector('.nav-item.active');
+    if (first) moveIndicator(first);
+  });
+
+  // Click: set active immediately
+  navItems.forEach(item => {
+    item.addEventListener('click', () => setActive(item.dataset.section));
+  });
+
+  // Scroll: auto-highlight based on section in view
+  const sectionIds = ['hero', 'features', 'how-it-works', 'reviews', 'faq'];
+  window.addEventListener('scroll', () => {
+    let current = sectionIds[0];
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY + window.innerHeight / 2 >= el.offsetTop) current = id;
+    });
+    setActive(current);
+  }, { passive: true });
+
+  // Re-position on resize
+  window.addEventListener('resize', () => {
+    const active = document.querySelector('.nav-item.active');
+    if (active) moveIndicator(active);
+  });
+})();
+
+// ─── Dark Mode Toggle ───
+(function () {
+  const btn  = document.getElementById('themeToggle');
+  const body = document.body;
+
+  function applyTheme(dark) {
+    body.classList.toggle('dark', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    if (window.setShaderDark) window.setShaderDark(dark);
+    // Refresh particle colours
+    particles.forEach(p => {
+      p.color = Math.random() > 0.5 ? (dark ? '0,220,130' : '5,150,105') : (dark ? '59,130,246' : '37,99,235');
+    });
+  }
+
+  // Restore saved preference
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && prefersDark)) applyTheme(true);
+
+  btn.addEventListener('click', () => applyTheme(!body.classList.contains('dark')));
+})();
+
+// ─── WebGL Mesh Gradient (Hero Background) ───
+(function () {
+  const heroCanvas = document.getElementById('chart-canvas');
+  const gl = heroCanvas.getContext('webgl') || heroCanvas.getContext('experimental-webgl');
+  if (!gl) return;
+
+  const vsSource = `
+    attribute vec2 aPosition;
+    void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }
+  `;
+
+  const fsSource = `
+    precision highp float;
+    uniform float uTime;
+    uniform vec2  uResolution;
+    uniform float uDark;
+
+    vec2 hash2(vec2 p) {
+      p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+      return fract(sin(p) * 43758.5453123) * 2.0 - 1.0;
+    }
+    float gnoise(vec2 p) {
+      vec2 i = floor(p), f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(dot(hash2(i),           f),           dot(hash2(i+vec2(1,0)), f-vec2(1,0)), u.x),
+        mix(dot(hash2(i+vec2(0,1)), f-vec2(0,1)), dot(hash2(i+vec2(1,1)), f-vec2(1,1)), u.x),
+        u.y
+      );
+    }
+
+    void main() {
+      vec2 uv = gl_FragCoord.xy / uResolution;
+      float t  = uTime * 0.16;
+
+      float n1 = gnoise(uv * 2.4 + vec2(t * 0.55,  t * 0.38));
+      float n2 = gnoise(uv * 3.8 - vec2(t * 0.28,  t * 0.65));
+      float n3 = gnoise(uv * 1.6 + vec2(t * 0.18, -t * 0.45));
+      float blend = n1 * 0.5 + n2 * 0.32 + n3 * 0.18;
+
+      /* ── Light palette ── */
+      vec3 bgL   = vec3(0.969, 0.957, 0.937);
+      vec3 warmL = vec3(0.984, 0.949, 0.922);
+      vec3 coolL = vec3(0.945, 0.957, 0.980);
+      vec3 sageL = vec3(0.937, 0.961, 0.952);
+      vec3 colL  = bgL;
+      colL = mix(colL, warmL, max(0.0, smoothstep(0.22, 0.72, blend))     * 0.55);
+      colL = mix(colL, coolL, max(0.0, smoothstep(0.18, 0.62, n2 + 0.12)) * 0.40);
+      colL = mix(colL, sageL, max(0.0, smoothstep(0.30, 0.68, n3))         * 0.30);
+
+      /* ── Dark palette ── */
+      vec3 bgD   = vec3(0.024, 0.035, 0.059);
+      vec3 greenD = vec3(0.000, 0.863, 0.510);
+      vec3 blueD  = vec3(0.231, 0.510, 0.965);
+      vec3 cyanD  = vec3(0.133, 0.827, 0.933);
+      vec3 colD   = bgD;
+      colD += greenD * max(0.0, smoothstep(0.22, 0.72, blend))     * 0.13;
+      colD += blueD  * max(0.0, smoothstep(0.18, 0.62, n2 + 0.12)) * 0.09;
+      colD += cyanD  * max(0.0, smoothstep(0.30, 0.68, n3))         * 0.06;
+
+      vec3 col = mix(colL, colD, uDark);
+
+      /* Vignette — subtle in light, stronger in dark */
+      vec2 c = uv - 0.5;
+      float vigL = clamp(1.0 - dot(c,c) * 0.35,  0.92, 1.0);
+      float vigD = clamp(1.0 - dot(c,c) * 2.6,   0.0,  1.0);
+      float vig  = mix(vigL, vigD, uDark);
+
+      gl_FragColor = vec4(col, vig);
+    }
+  `;
+
+  function compileShader(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(s)); return null; }
+    return s;
+  }
+
+  const vs = compileShader(gl.VERTEX_SHADER,   vsSource);
+  const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+  if (!vs || !fs) return;
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs); gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error(gl.getProgramInfoLog(prog)); return; }
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const aPosLoc = gl.getAttribLocation(prog, 'aPosition');
+  gl.enableVertexAttribArray(aPosLoc);
+  gl.vertexAttribPointer(aPosLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const uTimeLoc = gl.getUniformLocation(prog, 'uTime');
+  const uResLoc  = gl.getUniformLocation(prog, 'uResolution');
+  const uDarkLoc = gl.getUniformLocation(prog, 'uDark');
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  function resizeHeroCanvas() {
+    heroCanvas.width  = window.innerWidth;
+    heroCanvas.height = window.innerHeight;
+    gl.viewport(0, 0, heroCanvas.width, heroCanvas.height);
+  }
+  resizeHeroCanvas();
+  window.addEventListener('resize', resizeHeroCanvas);
+
+  let targetDark  = document.body.classList.contains('dark') ? 1.0 : 0.0;
+  let currentDark = targetDark;
+  window.setShaderDark = (d) => { targetDark = d ? 1.0 : 0.0; };
+
+  if (!prefersReducedMotion) {
+    const t0 = performance.now();
+    (function frame() {
+      currentDark += (targetDark - currentDark) * 0.06;
+      const t = (performance.now() - t0) / 1000;
+      gl.uniform1f(uTimeLoc, t);
+      gl.uniform2f(uResLoc, heroCanvas.width, heroCanvas.height);
+      gl.uniform1f(uDarkLoc, currentDark);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(frame);
+    })();
+  } else {
+    gl.uniform1f(uTimeLoc, 0.0);
+    gl.uniform2f(uResLoc, heroCanvas.width, heroCanvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+})();
+</script>
+
+</body>
+</html>

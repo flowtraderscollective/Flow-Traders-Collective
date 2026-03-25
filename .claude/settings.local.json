@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 \"/Users/georgitoskov/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/c3766a84-8ef9-438b-af28-d67d7b78929c/b9c77e35-1e5b-482a-b045-1bc3e2e6ee12/skills/ui-ux-pro-max/scripts/search.py\" \"fintech trading community premium dark modern\" --design-system -p \"Flow Traders Collective\" -f markdown)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}
