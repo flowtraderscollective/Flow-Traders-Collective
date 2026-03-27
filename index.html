@@ -662,7 +662,7 @@ body.dark .steps::before { opacity: 0.2; }
 .bento-top { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .bento-mid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
 @media (max-width: 767px) {
-  .bento-top, .bento-mid { grid-template-columns: 1fr; }
+  .bento-top, .bento-mid { grid-template-columns: 1fr; gap: 20px; }
 }
 @media (min-width: 768px) and (max-width: 1023px) {
   .bento-mid { grid-template-columns: repeat(2,1fr); }
@@ -672,12 +672,12 @@ body.dark .steps::before { opacity: 0.2; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 28px rgba(0,0,0,0.07);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
-.bento-card:hover { transform: translateY(-3px); border-color: rgba(0,0,0,0.13); box-shadow: 0 12px 40px rgba(0,0,0,0.10); }
-body.dark .bento-card { box-shadow: none; }
-body.dark .bento-card:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 12px 40px rgba(0,0,0,0.55); }
+.bento-card:hover { transform: translateY(-3px); border-color: rgba(0,0,0,0.13); box-shadow: 0 12px 48px rgba(0,0,0,0.13); }
+body.dark .bento-card { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.25); }
+body.dark .bento-card:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 12px 48px rgba(0,0,0,0.6); }
 .bento-vis {
   background: rgba(247,244,239,0.6);
   border-bottom: 1px solid var(--border);
@@ -802,7 +802,7 @@ body.dark .bv-cal-booked { border-top-color: rgba(255,255,255,0.06); }
 
 /* Bento pair — 2-col medium row */
 .bento-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-@media (max-width: 767px) { .bento-pair { grid-template-columns: 1fr; } }
+@media (max-width: 767px) { .bento-pair { grid-template-columns: 1fr; gap: 20px; } }
 .bento-pair .bento-vis { height: 170px; }
 
 /* Zoom video call illustration */
@@ -855,7 +855,7 @@ body.dark .bv-cal-v2-event { border-top-color: rgba(255,255,255,0.06); }
 .coming-soon { padding: 48px 0; }
 @media (min-width: 1024px) { .coming-soon { padding: 56px 0; } }
 .coming-soon-header { text-align: center; margin-bottom: 40px; }
-.coming-soon-grid { display: flex; flex-direction: column; gap: 16px; }
+.coming-soon-grid { display: flex; flex-direction: column; gap: 24px; }
 @media (min-width: 600px) {
   .coming-soon-grid { flex-direction: row; gap: 20px; }
   .coming-soon-card { flex: 1; }
@@ -867,13 +867,15 @@ body.dark .bv-cal-v2-event { border-top-color: rgba(255,255,255,0.06); }
   border-radius: var(--radius);
   padding: 32px 28px;
   position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 28px rgba(0,0,0,0.07);
   transition: all 0.25s ease;
 }
+body.dark .coming-soon-card { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.25); }
 .coming-soon-card:hover {
   border-color: rgba(0,0,0,0.12);
   border-style: solid;
   background: var(--bg-card-hover);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.11);
 }
 .coming-soon-icon {
   width: 48px; height: 48px;
