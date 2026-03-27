@@ -506,13 +506,20 @@ body.dark .steps::before { opacity: 0.2; }
 /* ─── Rotating animated word ─── */
 .hero h1 {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0;
-  white-space: normal;
+  justify-content: center;
+  gap: 0.25em;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 @media (max-width: 767px) {
-  .hero h1 { font-size: 36px; }
+  .hero h1 {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    white-space: normal;
+    font-size: 36px;
+  }
   .hero-h1-animated { width: 100% !important; align-self: stretch; }
 }
 .hero-h1-static {
@@ -535,7 +542,7 @@ body.dark .steps::before { opacity: 0.2; }
   right: 0;
   margin: 0 auto;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   font-weight: 900;
   color: var(--text-primary);
   opacity: 0;
@@ -552,6 +559,9 @@ body.dark .steps::before { opacity: 0.2; }
   transform: translateY(-60px);
   transition-duration: 0.3s;
   transition-timing-function: ease-in;
+}
+@media (max-width: 767px) {
+  .rotating-word { justify-content: center; }
 }
 .hero p {
   font-size: 17px;
