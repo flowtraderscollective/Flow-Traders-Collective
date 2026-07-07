@@ -5,6 +5,22 @@
 <meta name="trustpilot-one-time-domain-verification-id" content="d81c3956-7ed2-40a6-a07b-8e137739aa48"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flow Traders Collective</title>
+<meta name="description" content="A focused trading community built around one thing: helping traders reach consistency. Live weekly calls, daily morning outlooks on NAS100, SPX500 and DAX, and real trade breakdowns.">
+<link rel="canonical" href="https://www.flowtraderscollective.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Flow Traders Collective">
+<meta property="og:title" content="Flow Traders Collective — Markets Reward Consistency">
+<meta property="og:description" content="A focused trading community built around one thing: helping traders reach consistency. Live weekly calls, daily morning outlooks on NAS100, SPX500 and DAX, and real trade breakdowns.">
+<meta property="og:url" content="https://www.flowtraderscollective.com/">
+<meta property="og:image" content="https://www.flowtraderscollective.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Flow Traders Collective — Markets Reward Consistency">
+<meta name="twitter:description" content="A focused trading community built around one thing: helping traders reach consistency. Live weekly calls, daily morning outlooks and real trade breakdowns.">
+<meta name="twitter:image" content="https://www.flowtraderscollective.com/og-image.jpg">
+<link rel="icon" type="image/png" href="logo-blue.png">
+<link rel="apple-touch-icon" href="logo-blue.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -663,7 +679,7 @@ body.dark .steps::before { opacity: 0.2; }
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 28px rgba(0,0,0,0.07);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s cubic-bezier(0.22,1,0.36,1), border-color 0.3s cubic-bezier(0.22,1,0.36,1);
 }
 .bento-card:hover { transform: translateY(-3px); border-color: rgba(0,0,0,0.13); box-shadow: 0 12px 48px rgba(0,0,0,0.13); }
 body.dark .bento-card { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.25); }
@@ -861,10 +877,11 @@ body.dark .bv-cal-v2-event { border-top-color: rgba(255,255,255,0.06); }
   padding: 32px 28px;
   position: relative;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 28px rgba(0,0,0,0.07);
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
 }
 body.dark .coming-soon-card { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.25); }
 .coming-soon-card:hover {
+  transform: translateY(-3px);
   border-color: rgba(0,0,0,0.12);
   border-style: solid;
   background: var(--bg-card-hover);
@@ -976,6 +993,7 @@ body.dark .coming-soon-card { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 8px 28px 
   0%   { transform: translateY(0); }
   100% { transform: translateY(-50%); }
 }
+.testimonials-wrap:hover .testimonials-track { animation-play-state: paused; }
 .review-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -1109,7 +1127,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
 @keyframes pulse      { 0%,100% { opacity:1; transform:scale(1);   } 50% { opacity:0.45; transform:scale(0.85); } }
 
 /* ─── Scroll Reveal ─── */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* ─── Reduced Motion ─── */
@@ -1120,6 +1138,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
     transition-duration: 0.01ms !important;
   }
   .reveal { opacity: 1; transform: none; transition: none; }
+  .testimonials-track { animation: none !important; }
   html { scroll-behavior: auto; }
 }
 
