@@ -21,3 +21,6 @@ main a, footer a { color: var(--text); text-underline-offset: 3px; }
 footer { border-top: 1px solid var(--line); padding: 28px 0 40px; font-size: 0.8125rem; color: var(--text-3); }
 footer .links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 12px; }
 :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 2px; }
+.cookie-declaration { margin-top: 20px; font-size: 0.875rem; overflow-x: auto; color: var(--text-2); }
+.cookie-declaration a { color: var(--text); }
+.cookie-declaration table { max-width: 100%; }
