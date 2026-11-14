@@ -839,6 +839,14 @@ body.dark .bv-trade-head { border-bottom-color: rgba(255,255,255,0.05); }
 .bv-trade-dir.long { background: rgba(0,220,130,0.12); color: #059669; }
 .bv-trade-result { margin-left: auto; font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: #059669; }
 .bv-trade-chart-wrap { padding: 6px 12px; }
+.bv-trade-dir.rec { margin-left: auto; background: rgba(0,0,0,0.05); color: var(--text-secondary); }
+body.dark .bv-trade-dir.rec { background: rgba(255,255,255,0.07); }
+.bv-review-list { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 9px 8px 10px; }
+.bv-review-item { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 500; padding: 7px 6px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); color: var(--text-primary); white-space: nowrap; min-width: 0; }
+body.dark .bv-review-item { border-color: rgba(255,255,255,0.07); }
+.bv-review-check { font-size: 10px; color: var(--accent-green); flex-shrink: 0; }
+.bv-prep-row { padding-top: 7px; padding-bottom: 7px; }
+.bv-prep-num { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); width: 12px; flex-shrink: 0; }
 .bv-trade-footer { padding: 7px 14px; display: flex; gap: 14px; border-top: 1px solid rgba(0,0,0,0.04); }
 body.dark .bv-trade-footer { border-top-color: rgba(255,255,255,0.04); }
 .bv-trade-footer span { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); }
@@ -965,6 +973,7 @@ body.dark .coming-soon-card { box-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 8px 28px 
 .reviews { padding: 48px 0; }
 @media (min-width: 1024px) { .reviews { padding: 56px 0; } }
 .reviews-header { text-align: center; margin-bottom: 40px; }
+.reviews-header .section-desc { margin: 0 auto; font-size: 14px; max-width: 560px; }
 /* Scrolling columns */
 .testimonials-wrap {
   display: flex;
@@ -1118,7 +1127,14 @@ footer p { font-size: 13px; color: var(--text-muted); }
 footer a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s ease; }
 footer a:hover { color: var(--text-primary); }
 footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset: 3px; border-radius: 2px; }
-.footer-links { display: flex; justify-content: center; gap: 28px; margin-bottom: 20px; }
+.footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px 28px; margin-bottom: 20px; font-size: 13px; }
+.footer-legal { max-width: 760px; margin: 0 auto 28px; text-align: left; }
+.footer-legal p { font-size: 12px; line-height: 1.7; color: var(--text-muted); margin-bottom: 12px; }
+.footer-legal strong { color: var(--text-secondary); font-weight: 600; }
+.cta-actions { position: relative; margin-top: 28px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 14px 24px; }
+.cta-contact { font-size: 15px; font-weight: 500; color: var(--text-secondary); text-decoration: none; border-bottom: 1px solid transparent; transition: color 0.2s ease, border-color 0.2s ease; }
+.cta-contact:hover { color: var(--text-primary); border-bottom-color: currentColor; }
+.cta-contact:focus-visible { outline: 2px solid var(--accent-green); outline-offset: 3px; border-radius: 2px; }
 
 /* ─── Keyframes ─── */
 @keyframes fadeInUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0);  } }
@@ -1259,7 +1275,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
           <span class="rotating-word">precision</span>
         </span>
       </h1>
-      <p>Most trading communities bury you in noise. Flow Traders Collective is different — built around one thing: helping traders reach consistency with a simple approach through live calls, daily outlooks and real trade breakdowns.</p>
+      <p>A small trading education community for people learning to day trade the major stock indices. Live calls, daily market preparation and recorded trade reviews, built around process and risk management.</p>
       <div class="hero-buttons">
         <a href="#features" class="btn-secondary flow-btn">
           <svg class="flow-arr flow-arr-l" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -1282,7 +1298,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="avatar avatar-3" aria-hidden="true">T</div>
             <div class="avatar avatar-4" aria-hidden="true">M</div>
           </div>
-          <div class="social-proof-text"><strong>Active traders</strong> growing every week</div>
+          <div class="social-proof-text"><strong>A small, active community</strong> of learners</div>
         </div>
       </div>
     </div>
@@ -1300,7 +1316,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
 
     <div class="features-bento">
 
-      <!-- Row 1: Live Calls + Morning Outlooks (large) -->
+      <!-- Row 1: Live Calls + Daily Market Prep (large) -->
       <div class="bento-top">
 
         <!-- Live Weekly Calls — schedule card -->
@@ -1333,75 +1349,55 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
           </div>
           <div class="bento-body">
             <h3>Live Weekly Calls</h3>
-            <p>Twice a week, we go live to review trades taken, discuss what's ahead and answer your questions in real time. No fluff — just actionable insight.</p>
+            <p>Twice a week on Zoom. We review the week's trades, winners and losers, walk through the reasoning and answer your questions. Every call is recorded.</p>
             <span class="feature-tag">2x per week</span>
           </div>
         </div>
 
-        <!-- Daily Morning Outlooks -->
+        <!-- Daily Market Prep -->
         <div class="bento-card reveal">
           <div class="bento-vis" style="align-items:center; padding:20px;" aria-hidden="true">
             <div class="bv-brief">
               <div class="bv-brief-head">
-                <span class="bv-brief-title">Morning Brief</span>
-                <span class="bv-brief-date" style="color:#2D8CFF; background:rgba(45,140,255,0.08); border:1px solid rgba(45,140,255,0.15);">Wed 25 Mar</span>
+                <span class="bv-brief-title">Daily Prep</span>
+                <span class="bv-brief-date" style="color:#2D8CFF; background:rgba(45,140,255,0.08); border:1px solid rgba(45,140,255,0.15);">Every morning</span>
               </div>
-              <div class="bv-brief-row">
-                <span class="bv-ticker">NAS100</span>
-                <span class="bv-bias bull">Bullish</span>
-                <span class="bv-level">21,540</span>
-              </div>
-              <div class="bv-brief-row">
-                <span class="bv-ticker">SPX500</span>
-                <span class="bv-bias neut">Neutral</span>
-                <span class="bv-level">5,712</span>
-              </div>
-              <div class="bv-brief-row">
-                <span class="bv-ticker">DAX</span>
-                <span class="bv-bias bull">Bullish</span>
-                <span class="bv-level">22,891</span>
-              </div>
+              <div class="bv-brief-row bv-prep-row"><span class="bv-prep-num">1</span><span class="bv-ticker">Structure</span></div>
+              <div class="bv-brief-row bv-prep-row"><span class="bv-prep-num">2</span><span class="bv-ticker">Areas of interest</span></div>
+              <div class="bv-brief-row bv-prep-row"><span class="bv-prep-num">3</span><span class="bv-ticker">Scenarios</span></div>
+              <div class="bv-brief-row bv-prep-row"><span class="bv-prep-num">4</span><span class="bv-ticker">What would change the view</span></div>
             </div>
           </div>
           <div class="bento-body">
-            <h3>Daily Morning Outlooks</h3>
-            <p>Every morning, get a detailed breakdown of NAS100, SPX500 and DAX — including key levels, bias and what setups to watch for before the session opens.</p>
+            <h3>Daily Market Prep</h3>
+            <p>Each morning George walks through how he reads the Nasdaq 100, S&amp;P 500 and DAX: market structure, the areas he is watching and why. It is a worked example of a preparation routine for you to learn from, not a trade call.</p>
             <span class="feature-tag blue">Every trading day</span>
           </div>
         </div>
       </div>
 
-      <!-- Row 2: Trade Recaps + Strategy Education -->
+      <!-- Row 2: Trade Reviews + Strategy Education -->
       <div class="bento-pair">
 
-        <!-- Trade Recaps — trade summary card -->
+        <!-- Trade Reviews — review checklist card -->
         <div class="bento-card reveal">
-          <div class="bento-vis" style="align-items:center; padding:20px;" aria-hidden="true">
+          <div class="bento-vis" style="align-items:center; padding:20px 14px;" aria-hidden="true">
             <div class="bv-trade-card">
               <div class="bv-trade-head">
-                <span class="bv-trade-inst">NAS100</span>
-                <span class="bv-trade-dir long">LONG</span>
-                <span class="bv-trade-result">+2.4R ✓</span>
+                <span class="bv-trade-inst">Trade Review</span>
+                <span class="bv-trade-dir rec">RECORDED</span>
               </div>
-              <div class="bv-trade-chart-wrap">
-                <svg width="100%" height="44" viewBox="0 0 240 44" preserveAspectRatio="none">
-                  <polyline points="0,34 22,32 44,35 66,31 88,33 110,30" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1.5"/>
-                  <path d="M110,30 C122,26 134,20 152,14 S178,5 198,3 L220,2 L240,2" fill="none" stroke="#00DC82" stroke-width="1.5"/>
-                  <path d="M110,30 C122,26 134,20 152,14 S178,5 198,3 L220,2 L240,2 L240,44 L110,44 Z" fill="rgba(0,220,130,0.06)"/>
-                  <circle cx="110" cy="30" r="3.5" fill="#3B82F6"/>
-                  <circle cx="220" cy="2" r="3.5" fill="#00DC82"/>
-                </svg>
-              </div>
-              <div class="bv-trade-footer">
-                <span><span class="lbl">Entry </span>21,420</span>
-                <span><span class="lbl">Exit </span>21,680</span>
-                <span><span class="lbl">+2h 15m</span></span>
+              <div class="bv-review-list">
+                <div class="bv-review-item"><span class="bv-review-check">✓</span>Market structure</div>
+                <div class="bv-review-item"><span class="bv-review-check">✓</span>Entry criteria</div>
+                <div class="bv-review-item"><span class="bv-review-check">✓</span>Risk management</div>
+                <div class="bv-review-item"><span class="bv-review-check">✓</span>Trade management</div>
               </div>
             </div>
           </div>
           <div class="bento-body">
-            <h3>Trade Recaps</h3>
-            <p>Recorded walkthroughs of real trades — entry, management and exit explained in full, so you understand the thinking behind every decision.</p>
+            <h3>Trade Reviews</h3>
+            <p>Recorded walkthroughs of real trades, including the losing ones. Each review covers the same checklist: market structure, entry criteria, risk management and trade management.</p>
             <span class="feature-tag cyan">Recorded &amp; uploaded</span>
           </div>
         </div>
@@ -1411,14 +1407,14 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
           <div class="bento-vis" style="align-items:flex-start; padding:20px;" aria-hidden="true">
             <div class="bv-modules">
               <div class="bv-mod done"><span class="bv-mod-icon">✓</span>Market Structure</div>
-              <div class="bv-mod done"><span class="bv-mod-icon">✓</span>Entry Triggers</div>
+              <div class="bv-mod done"><span class="bv-mod-icon">✓</span>Entry Criteria</div>
               <div class="bv-mod active"><span class="bv-mod-icon">→</span>Risk Management</div>
               <div class="bv-mod locked"><span class="bv-mod-icon">○</span>Trade Management</div>
             </div>
           </div>
           <div class="bento-body">
             <h3>Strategy Education</h3>
-            <p>A library of videos breaking down the core strategy — from structure to entries — so you understand the "why" behind every trade.</p>
+            <p>A foundation video library covering market structure, entry criteria, risk management and trade management. Learn at your own pace.</p>
             <span class="feature-tag">Foundation videos</span>
           </div>
         </div>
@@ -1436,25 +1432,25 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
                 <span class="bv-brief-date">Today</span>
               </div>
               <div class="bv-brief-row">
-                <span class="bv-ticker">Trade Ideas</span>
-                <span class="bv-bias bull">Shared</span>
+                <span class="bv-ticker">Analysis</span>
+                <span class="bv-bias bull">Discussed</span>
                 <span class="bv-level">Daily</span>
               </div>
               <div class="bv-brief-row">
-                <span class="bv-ticker">Q&amp;A Support</span>
+                <span class="bv-ticker">Q&amp;A</span>
                 <span class="bv-bias bull">Open</span>
                 <span class="bv-level">Always</span>
               </div>
               <div class="bv-brief-row">
                 <span class="bv-ticker">Accountability</span>
-                <span class="bv-bias neut">Active</span>
-                <span class="bv-level">Daily</span>
+                <span class="bv-bias neut">Check-ins</span>
+                <span class="bv-level">Regular</span>
               </div>
             </div>
           </div>
           <div class="bento-body">
             <h3>Community &amp; Support</h3>
-            <p>Surround yourself with like-minded traders. Share ideas, get feedback on your charts, ask questions and hold each other accountable — because serious trading doesn't have to be a solo journey.</p>
+            <p>Members discuss their analysis daily · Q&amp;A always open · Accountability check-ins</p>
             <span class="feature-tag purple">Always active</span>
           </div>
         </div>
@@ -1483,7 +1479,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
           </div>
           <div class="bento-body">
             <h3>Free 1-1 Quarterly Review</h3>
-            <p>Members who clearly put in the work earn a free one-on-one quarterly review — a personal deep-dive into your trading, performance and next steps. This isn't handed out — it's earned.</p>
+            <p>A one-to-one review of your process and journal with George. Earned through active participation.</p>
             <span class="feature-tag gold" style="white-space: nowrap;">Worth €200+ · Must be earned</span>
           </div>
         </div>
@@ -1507,35 +1503,35 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
         <div class="step-num">01</div>
         <div class="step-content">
           <h3>Learn the Strategy</h3>
-          <p>Start with the educational videos to understand the core approach to trading index CFDs — market structure, entries, risk management.</p>
+          <p>Start with the video library: market structure, entries and risk management for the major stock indices.</p>
         </div>
       </div>
       <div class="step reveal">
         <div class="step-num">02</div>
         <div class="step-content">
-          <h3>Follow the Daily Outlooks</h3>
-          <p>Each morning, tune into the market analysis for NAS100, SPX500 and DAX. See where the opportunities are before you open a chart.</p>
+          <h3>Study the Daily Prep</h3>
+          <p>See how a trading day is prepared, and compare it with your own analysis.</p>
         </div>
       </div>
       <div class="step reveal">
         <div class="step-num">03</div>
         <div class="step-content">
-          <h3>Watch the Recaps</h3>
-          <p>Study real trade breakdowns to see how the strategy plays out in live markets. Understand the reasoning behind every decision.</p>
+          <h3>Watch the Reviews</h3>
+          <p>Learn from real trades, good and bad, and the reasoning behind each decision.</p>
         </div>
       </div>
       <div class="step reveal">
         <div class="step-num">04</div>
         <div class="step-content">
           <h3>Join the Live Calls</h3>
-          <p>Twice a week, get real-time analysis, Q&A and trade reviews. Ask anything — this is where theory meets practice.</p>
+          <p>Ask questions and get feedback on your own trades.</p>
         </div>
       </div>
       <div class="step reveal">
         <div class="step-num">05</div>
         <div class="step-content">
-          <h3>Pass Your Challenge</h3>
-          <p>Apply what you've learned with confidence. The structure, discipline and community support make the difference.</p>
+          <h3>Build Your Routine</h3>
+          <p>Apply what you have learned at your own pace, journal your trades and bring them to the calls.</p>
         </div>
       </div>
     </div>
@@ -1546,8 +1542,9 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
 <section class="reviews" id="reviews">
   <div class="container">
     <div class="reviews-header reveal">
-      <span class="section-label">What Members Say</span>
-      <h2 class="section-title"><span class="section-title-accent">Real Traders,<br class="mobile-only"> Real Results</span></h2>
+      <span class="section-label">Reviews</span>
+      <h2 class="section-title"><span class="section-title-accent">What Members Say</span></h2>
+      <p class="section-desc">Reviews reflect individual members' experiences. Results are not typical and are not guaranteed. Trading involves risk of loss.</p>
     </div>
     <div class="testimonials-wrap">
 
@@ -1560,7 +1557,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Been a member of Georges community for a month now and have already seen big improvements in my trading. I've had good knowledge of the concepts used for a long while but would always make it more difficult than it needed to be. Being under Georges guidance has made me realise less is more and keeping things simple allows me trade while on job sites removing that chart anxiety of too many unnecessary confluences. The Daily outlooks and weekly live calls on the 3 assets traded give constant clarity on how we should be approaching the markets and allow us to compare to our own analysis to make sure we're on track and again keeping things simple! We're a relatively small community right now which makes everything all that better without the noise of irrelevant conversations throughout the channels. A great group we currently have and are all on the exact same path for success pushing one another and being supportive as it should be. I will not be going anywhere fast as I feel right at home here building relationships with an incredible group.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar amber">A</div>
-              <div><div class="review-name">Alex</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Alex</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1568,7 +1565,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">If you're looking for the right direction, structure and day to day path in trading, then this community can offer you that. It is not a signal group, but rather a group to help you elevate yourself and your trading towards the goal of consistency. You will learn how less is more, and how you can combine everyday life with trading. Highly recommend it if you have been struggling with trading, it's worth your money and most importantly your time.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar teal">J</div>
-              <div><div class="review-name">Jovan</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Jovan</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1576,7 +1573,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">After trying several communities, I'm convinced this will be the last one. We're a small group with the same goal, becoming successful in trading. The community is great and everyone helps each other move forward. George, the founder, plays a big role in this by providing daily market updates, hosting multiple live calls each week, and offering direct support whenever you need it. It's exactly the kind of environment you need to take your trading to the next level!</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar orange">N</div>
-              <div><div class="review-name">Noah</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Noah</div></div>
             </div>
           </div>
           <!-- set 2 (duplicate for seamless loop) -->
@@ -1585,7 +1582,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Been a member of Georges community for a month now and have already seen big improvements in my trading. I've had good knowledge of the concepts used for a long while but would always make it more difficult than it needed to be. Being under Georges guidance has made me realise less is more and keeping things simple allows me trade while on job sites removing that chart anxiety of too many unnecessary confluences. The Daily outlooks and weekly live calls on the 3 assets traded give constant clarity on how we should be approaching the markets and allow us to compare to our own analysis to make sure we're on track and again keeping things simple! We're a relatively small community right now which makes everything all that better without the noise of irrelevant conversations throughout the channels. A great group we currently have and are all on the exact same path for success pushing one another and being supportive as it should be. I will not be going anywhere fast as I feel right at home here building relationships with an incredible group.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar amber">A</div>
-              <div><div class="review-name">Alex</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Alex</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1593,7 +1590,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">If you're looking for the right direction, structure and day to day path in trading, then this community can offer you that. It is not a signal group, but rather a group to help you elevate yourself and your trading towards the goal of consistency. You will learn how less is more, and how you can combine everyday life with trading. Highly recommend it if you have been struggling with trading, it's worth your money and most importantly your time.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar teal">J</div>
-              <div><div class="review-name">Jovan</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Jovan</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1601,30 +1598,22 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">After trying several communities, I'm convinced this will be the last one. We're a small group with the same goal, becoming successful in trading. The community is great and everyone helps each other move forward. George, the founder, plays a big role in this by providing daily market updates, hosting multiple live calls each week, and offering direct support whenever you need it. It's exactly the kind of environment you need to take your trading to the next level!</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar orange">N</div>
-              <div><div class="review-name">Noah</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Noah</div></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Column 2 (tablet+): Joe · Marko -->
+      <!-- Column 2 (tablet+): Marko · Minesh -->
       <div class="testimonials-col col-2">
         <div class="testimonials-track" style="--dur:26s">
           <!-- set 1 -->
           <div class="review-card">
             <div class="review-stars" aria-label="5 stars">★★★★★</div>
-            <div class="review-text">George has been fantastic so far in my Flow Traders journey. I have been watching George for a while with his trades and blown away with how professional and supportive he has been, even before I was part of the community. His content is clear and simple to understand and no question is too small to ask. I have been part of the community for 4 weeks and have already passed 2 prop accounts for funding. Would highly recommend for anyone that is looking to grow their Trading IQ.</div>
-            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
-              <div class="review-avatar rose">Jo</div>
-              <div><div class="review-name">Joe</div><div class="review-since">Verified Review</div></div>
-            </div>
-          </div>
-          <div class="review-card">
-            <div class="review-stars" aria-label="5 stars">★★★★★</div>
             <div class="review-text">This is my fourth and final Forex community because it simply works. It's a fairly small community where you don't get lost among irrelevant comments and people who are just here to get rich quick. George is a great mentor, always ready to help and answer any questions. Every day, he posts detailed analyses of all three assets he trades and updates them in real-time as certain market movements occur. In addition, there is a live session twice a week where he explains his current view of the market, answers questions, offers advice, and clarifies all past trades he has made. His trading method is, at its core, very simple, as is his teaching style, which significantly accelerates the learning curve.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar green">M</div>
-              <div><div class="review-name">Marko</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Marko</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1632,24 +1621,16 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Excellent community of like minded people. George explains things with clear simplicity. Two live webinars per week without fail. Has really helped me develop as a trader and made me understand the strategy with clear rules. Highly recommend.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar indigo">Mi</div>
-              <div><div class="review-name">Minesh</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Minesh</div></div>
             </div>
           </div>
           <!-- set 2 (duplicate for seamless loop) -->
           <div class="review-card">
             <div class="review-stars" aria-label="5 stars">★★★★★</div>
-            <div class="review-text">George has been fantastic so far in my Flow Traders journey. I have been watching George for a while with his trades and blown away with how professional and supportive he has been, even before I was part of the community. His content is clear and simple to understand and no question is too small to ask. I have been part of the community for 4 weeks and have already passed 2 prop accounts for funding. Would highly recommend for anyone that is looking to grow their Trading IQ.</div>
-            <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
-              <div class="review-avatar rose">Jo</div>
-              <div><div class="review-name">Joe</div><div class="review-since">Verified Review</div></div>
-            </div>
-          </div>
-          <div class="review-card">
-            <div class="review-stars" aria-label="5 stars">★★★★★</div>
             <div class="review-text">This is my fourth and final Forex community because it simply works. It's a fairly small community where you don't get lost among irrelevant comments and people who are just here to get rich quick. George is a great mentor, always ready to help and answer any questions. Every day, he posts detailed analyses of all three assets he trades and updates them in real-time as certain market movements occur. In addition, there is a live session twice a week where he explains his current view of the market, answers questions, offers advice, and clarifies all past trades he has made. His trading method is, at its core, very simple, as is his teaching style, which significantly accelerates the learning curve.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar green">M</div>
-              <div><div class="review-name">Marko</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Marko</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1657,7 +1638,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Excellent community of like minded people. George explains things with clear simplicity. Two live webinars per week without fail. Has really helped me develop as a trader and made me understand the strategy with clear rules. Highly recommend.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar indigo">Mi</div>
-              <div><div class="review-name">Minesh</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Minesh</div></div>
             </div>
           </div>
         </div>
@@ -1672,7 +1653,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">George has developed an extremely effective strategy to trade with. It is the only strategy I've come across that is so abundant and forgiving — it allows you to not be perfect 100% of the time and still come out easily on top if you are consistently applying his teachings, which is also very easy to grasp from his daily extremely detailed outlooks and quick availability to answer any questions.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar blue">H</div>
-              <div><div class="review-name">H.W.</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">H.W.</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1680,7 +1661,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Great ecosystem. Very solid place. This is where you want to be if you want a simple yet very effective strategy with constant market updates and calls to stay accountable and sharp.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar cyan">T</div>
-              <div><div class="review-name">Thomas</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Thomas</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1688,7 +1669,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Have been a part of this community for around 2 months now, and it has changed my way of reading the markets. Struggled with understanding the higher timeframe but now I really start to grasp it and convert it into profitable trades. All due to George's teachings! The strategy allows me to work a full time job at the same time which I appreciate a lot. The community also contains nice learning materials and weekly live calls with trade recaps. Definitely recommend it.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar purple">Ni</div>
-              <div><div class="review-name">Nicolai</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Nicolai</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1696,7 +1677,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Supportive group with a lot of knowledge. The team listens to feedback and provides solutions to improve your trading whether its education, psychology or execution.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar lime">B</div>
-              <div><div class="review-name">Brad</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Brad</div></div>
             </div>
           </div>
           <!-- set 2 (duplicate for seamless loop) -->
@@ -1705,7 +1686,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">George has developed an extremely effective strategy to trade with. It is the only strategy I've come across that is so abundant and forgiving — it allows you to not be perfect 100% of the time and still come out easily on top if you are consistently applying his teachings, which is also very easy to grasp from his daily extremely detailed outlooks and quick availability to answer any questions.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar blue">H</div>
-              <div><div class="review-name">H.W.</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">H.W.</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1713,7 +1694,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Great ecosystem. Very solid place. This is where you want to be if you want a simple yet very effective strategy with constant market updates and calls to stay accountable and sharp.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar cyan">T</div>
-              <div><div class="review-name">Thomas</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Thomas</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1721,7 +1702,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Have been a part of this community for around 2 months now, and it has changed my way of reading the markets. Struggled with understanding the higher timeframe but now I really start to grasp it and convert it into profitable trades. All due to George's teachings! The strategy allows me to work a full time job at the same time which I appreciate a lot. The community also contains nice learning materials and weekly live calls with trade recaps. Definitely recommend it.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar purple">Ni</div>
-              <div><div class="review-name">Nicolai</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Nicolai</div></div>
             </div>
           </div>
           <div class="review-card">
@@ -1729,7 +1710,7 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
             <div class="review-text">Supportive group with a lot of knowledge. The team listens to feedback and provides solutions to improve your trading whether its education, psychology or execution.</div>
             <div class="review-header" style="margin-top:16px;margin-bottom:0;padding-top:14px;border-top:1px solid var(--border);">
               <div class="review-avatar lime">B</div>
-              <div><div class="review-name">Brad</div><div class="review-since">Verified Review</div></div>
+              <div><div class="review-name">Brad</div></div>
             </div>
           </div>
         </div>
@@ -1778,31 +1759,41 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
     <div class="faq-list">
       <div class="faq-item reveal">
         <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>What markets do you trade?</span>
+          <span>What markets do you cover?</span>
           <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="faq-answer">
-          <div class="faq-answer-inner">We focus exclusively on Index CFDs — specifically NAS100 (NASDAQ), SPX500 (S&P 500) and GER40 (DAX). This allows us to specialise and build deep expertise in these markets.</div>
+          <div class="faq-answer-inner">Three major stock indices: Nasdaq 100, S&amp;P 500 and DAX. We teach how to analyse these markets. We do not recommend any broker, product or account type.</div>
         </div>
       </div>
 
       <div class="faq-item reveal">
         <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>Is this suitable for beginners?</span>
+          <span>Is this a signal group?</span>
           <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="faq-answer">
-          <div class="faq-answer-inner">Yes. The educational videos cover the strategy from the ground up, and the daily outlooks and live calls give you real-world context. Whether you're new or experienced, the community is structured to meet you where you are.</div>
+          <div class="faq-answer-inner">No. We do not tell you what or when to trade. Everything we share is educational, and every trading decision is your own.</div>
         </div>
       </div>
 
       <div class="faq-item reveal">
         <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>How often are the live calls?</span>
+          <span>Is it suitable for beginners?</span>
           <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="faq-answer">
-          <div class="faq-answer-inner">Twice per week. During each call, we review trades taken during the week, discuss expectations for the rest of the week and open the floor for Q&A.</div>
+          <div class="faq-answer-inner">Yes. The video library starts from the foundations, and the calls are open to questions at any level. Expect it to take time and practice.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What is in the Daily Market Prep?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">A walkthrough of market structure and the areas George is watching on each index, with his reasoning. It shows a preparation process and is not advice to trade.</div>
         </div>
       </div>
 
@@ -1812,27 +1803,37 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
           <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="faq-answer">
-          <div class="faq-answer-inner">That's one of the key goals. The strategy, outlooks, recaps and community support are all designed to help you build the consistency and discipline needed to pass funding challenges.</div>
+          <div class="faq-answer-inner">Some members are working towards prop firm evaluations, and what we teach about risk and discipline is relevant to that. We are not affiliated with any prop firm, and we cannot promise you will pass.</div>
         </div>
       </div>
 
       <div class="faq-item reveal">
         <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>What do the morning outlooks include?</span>
+          <span>How much does it cost?</span>
           <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="faq-answer">
-          <div class="faq-answer-inner">Each morning, you get a detailed analysis of NAS100, SPX500 and DAX covering key levels, directional bias and the specific conditions needed to consider a trade. It's your pre-session preparation.</div>
+          <div class="faq-answer-inner">Membership is €150 per month, billed through LaunchPass. You can cancel at any time.</div>
         </div>
       </div>
 
       <div class="faq-item reveal">
         <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>Am I going to get the attention I need?</span>
+          <span>How big is the community?</span>
           <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="faq-answer">
-          <div class="faq-answer-inner">Short answer: yes. This is intentionally kept as a small community — not a mass-membership platform. That means questions get answered, charts get reviewed and nobody gets lost in the noise. As a member, you're also locked in at your current price. Any future price increases won't affect you.</div>
+          <div class="faq-answer-inner">We keep it small so everyone gets attention. Your price is locked in when you join, so future increases will not affect you.</div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Is trading risky?</span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Yes. Most retail traders lose money, and you can lose all of the capital you trade with. Never trade money you cannot afford to lose.</div>
         </div>
       </div>
     </div>
@@ -1843,14 +1844,16 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
 <section class="cta" id="join">
   <div class="container">
     <div class="cta-card reveal">
-      <h2>Ready to Level Up<br><span class="section-title-accent">Your Trading?</span></h2>
-      <p>Join Flow Traders Collective and start your journey to consistent, confident trading.</p>
+      <h2>Ready to build a<br><span class="section-title-accent">structured trading routine?</span></h2>
+      <div class="cta-actions">
       <a href="https://www.launchpass.com/flow-traders-collective/discord-b" class="btn-primary flow-btn">
         <svg class="flow-arr flow-arr-l" viewBox="0 0 24 24" width="15" height="15"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         <span class="flow-btn-text">Join the Discord</span>
         <span class="flow-btn-blob"></span>
         <svg class="flow-arr flow-arr-r" viewBox="0 0 24 24" width="15" height="15"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
+      <a href="mailto:toskovcapital@gmail.com" class="cta-contact">Contact</a>
+      </div>
     </div>
   </div>
 </section>
@@ -1858,8 +1861,16 @@ footer a:focus-visible { outline: 2px solid var(--accent-green); outline-offset:
 <!-- ─── Footer ─── -->
 <footer>
   <div class="container">
+    <div class="footer-legal">
+      <p><strong>Risk warning:</strong> Trading financial markets carries a high risk of loss and is not suitable for everyone. Leveraged products can result in losses that exceed your expectations, and most retail traders lose money. Past performance does not indicate future results.</p>
+      <p><strong>Education only:</strong> Flow Traders Collective provides educational content and community discussion. We do not provide investment advice, personal recommendations, trading signals or brokerage services, and we are not a licensed financial institution. Nothing on this site or in our community is an offer or solicitation to buy or sell any financial instrument. You are solely responsible for your own trading decisions.</p>
+      <p><strong>No affiliations:</strong> We are not affiliated with, and receive no commission from, any broker or proprietary trading firm.</p>
+      <p>Flow Traders Collective is operated by Toskov Capital, company no. (EIK) 208361702, Velcho Atanasov, Sofia, Bulgaria. Contact: <a href="mailto:toskovcapital@gmail.com">toskovcapital@gmail.com</a>.</p>
+    </div>
     <div class="footer-links">
-      <a href="mailto:toskovcapital@gmail.com">Contact</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Risk Disclosure</a>
     </div>
     <p>&copy; 2026 Flow Traders Collective. All rights reserved.</p>
   </div>
